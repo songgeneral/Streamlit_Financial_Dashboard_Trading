@@ -83,46 +83,49 @@ def To_Dictionary_1(df):
 KBar_dic = To_Dictionary_1(df)
 
 
-#######  (3) 改變 KBar 時間長度  #######
+#######  (3) 改變 KBar 時間長度 & 形成 KBar 字典 (新週期的)  #######
+###### 定義函數: 進行 K 棒更新  &  形成 KBar 字典 (新週期的): 設定cycle_duration可以改成你想要的 KBar 週期
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def Change_Cycle(Date,cycle_duration,KBar_dic):
+    ###### 進行 K 棒更新
+    KBar = indicator_forKBar_short.KBar(Date,cycle_duration)    ## 設定cycle_duration可以改成你想要的 KBar 週期
+    for i in range(KBar_dic['time'].size):
+        #time = datetime.datetime.strptime(KBar_dic['time'][i],'%Y%m%d%H%M%S%f')
+        time = KBar_dic['time'][i]
+        #prod = KBar_dic['product'][i]
+        open_price= KBar_dic['open'][i]
+        close_price= KBar_dic['close'][i]
+        low_price= KBar_dic['low'][i]
+        high_price= KBar_dic['high'][i]
+        qty =  KBar_dic['volume'][i]
+        amount = KBar_dic['amount'][i]
+        #tag=KBar.TimeAdd(time,price,qty,prod)
+        tag=KBar.AddPrice(time, open_price, close_price, low_price, high_price, qty)
+    
+    ###### 形成 KBar 字典 (新週期的):
+    KBar_dic = {}
+    KBar_dic['time'] =  KBar.TAKBar['time']   
+    #KBar_dic['product'] =  KBar.TAKBar['product']
+    KBar_dic['product'] = np.repeat('tsmc', KBar_dic['time'].size)
+    KBar_dic['open'] = KBar.TAKBar['open']
+    KBar_dic['high'] =  KBar.TAKBar['high']
+    KBar_dic['low'] =  KBar.TAKBar['low']
+    KBar_dic['close'] =  KBar.TAKBar['close']
+    KBar_dic['volume'] =  KBar.TAKBar['volume']
+    
+    return KBar_dic
+    
+
 ###### 改變日期資料型態
 Date = start_date.strftime("%Y-%m-%d")
+
 ###### 設定 K 棒的時間長度(分鐘)
 st.subheader("設定一根 K 棒的時間長度(分鐘)")
 cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', key="KBar_duration")
 cycle_duration = int(cycle_duration)
 
-###### 進行 K 棒更新
-KBar = indicator_forKBar_short.KBar(Date,cycle_duration)    ## 設定cycle_duration可以改成你想要的 KBar 週期
-for i in range(KBar_dic['time'].size):
-    #time = datetime.datetime.strptime(KBar_dic['time'][i],'%Y%m%d%H%M%S%f')
-    time = KBar_dic['time'][i]
-    #prod = KBar_dic['product'][i]
-    open_price= KBar_dic['open'][i]
-    close_price= KBar_dic['close'][i]
-    low_price= KBar_dic['low'][i]
-    high_price= KBar_dic['high'][i]
-    qty =  KBar_dic['volume'][i]
-    amount = KBar_dic['amount'][i]
-    #tag=KBar.TimeAdd(time,price,qty,prod)
-    tag=KBar.AddPrice(time, open_price, close_price, low_price, high_price, qty)
-    
-    # 更新K棒才判斷，若要逐筆判斷則 註解下面兩行, 因為計算 MA是利用收盤價, 而在 KBar class 中的 "TimeAdd"函數方法中, 收盤價只是一直附加最新的 price 而已.
-    #if tag != 1:
-        #continue
-    #print(KBar.Time,KBar.GetOpen(),KBar.GetHigh(),KBar.GetLow(),KBar.GetClose(),KBar.GetVolume()) 
-    
-###### 形成 KBar 字典 (新週期的):
-KBar_dic = {}
-KBar_dic['time'] =  KBar.TAKBar['time']   
-#KBar_dic['product'] =  KBar.TAKBar['product']
-KBar_dic['product'] = np.repeat('tsmc', KBar_dic['time'].size)
-KBar_dic['open'] = KBar.TAKBar['open']
-KBar_dic['high'] =  KBar.TAKBar['high']
-KBar_dic['low'] =  KBar.TAKBar['low']
-KBar_dic['close'] =  KBar.TAKBar['close']
-KBar_dic['volume'] =  KBar.TAKBar['volume']
-
-
+###### 進行 K 棒更新  & 形成 KBar 字典 (新週期的)
+KBar_dic = Change_Cycle(Date,cycle_duration,KBar_dic)   ## 設定cycle_duration可以改成你想要的 KBar 週期
 
 
 
