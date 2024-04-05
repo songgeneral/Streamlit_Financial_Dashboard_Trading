@@ -253,7 +253,7 @@ signal_period = st.slider('選擇一個整數', 0, 100, 9)
 KBar_df = Calculate_MACD(KBar_df, fast_period, slow_period, signal_period)
 
 ##### 尋找最後 NAN值的位置
-last_nan_index_MACD = KBar_df['EMA_Slow'][::-1].index[KBar_df['EMA_Slow'][::-1].apply(pd.isna)][0]
+last_nan_index_MACD = KBar_df['MACD'][::-1].index[KBar_df['MACD'][::-1].apply(pd.isna)][0]
 
 
 
