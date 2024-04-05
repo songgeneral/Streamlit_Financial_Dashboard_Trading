@@ -215,7 +215,7 @@ class Record():
         ax1.set_xlabel('交易編號')
         ax1.set_ylabel('累計盈虧(元/每股)')
         ## 设置x轴的刻度
-        ax1.xticks(range(1, len(TotalProfit) + 1))
+        plt.xticks(range(1, len(TotalProfit) + 1))
         # plt.show()    # 顯示繪製圖表
         # plt.savefig(StrategyName+'.png') #儲存繪製圖表
         ### 在Streamlit中显示
