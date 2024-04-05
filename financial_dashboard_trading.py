@@ -368,7 +368,7 @@ MoveStopLoss = st.slider('選擇程式交易停損金額(例如30元, 進場做�
 OrderRecord=Record() 
 
 ###### 變為字典
-KBar_dic = KBar_df.to_dict('list')
+KBar_dic = KBar_df_original.to_dict('list')
 
 ###### 開始回測
 for n in range(0,len(KBar_dic['time'])-1):
