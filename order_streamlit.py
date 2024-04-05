@@ -201,21 +201,33 @@ class Record():
         # matplotlib.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
         matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
         matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
-        ## 定義圖表
+        
+        #### 定義圖表
         ax1 = plt.subplot(111)
-        ## 計算累計績效
+        
+        #### 計算累計績效
         TotalProfit=[0]
         for i in self.Profit:
             TotalProfit.append(TotalProfit[-1]+i)
-        ## 繪製圖形
+        
+        #### 繪製圖形
         ax1.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
-        ##定義標頭
+        
+        ####定義標頭
         # ax1.set_title('Profit')
         ax1.set_title('累計盈虧')
         ax1.set_xlabel('交易編號')
         ax1.set_ylabel('累計盈虧(元/每股)')
-        ## 设置x轴的刻度
-        plt.xticks(range(1, len(TotalProfit) + 1))
+        
+        #### 设置x轴的刻度
+        ### 获取TotalProfit的长度
+        length = len(TotalProfit)
+        ### 创建新的x轴刻度列表，每个值都加1
+        new_ticks = range(1, length + 1)
+        ### 应用新的x轴刻度
+        plt.xticks(ticks=range(length), labels=new_ticks)
+        
+        #### 顯示繪製圖表
         # plt.show()    # 顯示繪製圖表
         # plt.savefig(StrategyName+'.png') #儲存繪製圖表
         ### 在Streamlit中显示
