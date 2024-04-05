@@ -11,7 +11,8 @@ import streamlit as st
 import streamlit.components.v1 as stc 
 
 
-###### (1) 開始設定 ######
+####### (1) 開始設定 #######
+###### 設定網頁標題介面 
 html_temp = """
 		<div style="background-color:#3872fb;padding:10px;border-radius:10px">
 		<h1 style="color:white;text-align:center;">金融資料視覺化呈現 (金融看板) </h1>
@@ -20,31 +21,19 @@ html_temp = """
 		"""
 stc.html(html_temp)
 
-#df = pd.read_excel("kbars_台積電_1100701_1100708_2.xlsx")
-#df = pd.read_excel("kbars_2330_2022-07-01-2022-07-31.xlsx")
 
-# ## 讀取 excel 檔
+###### 讀取資料
+# ##### 讀取 excel 檔
 # df_original = pd.read_excel("kbars_2330_2022-01-01-2022-11-18.xlsx")
 
-# ## 保存为Pickle文件:
-# df_original.to_pickle('kbars_2330_2022-01-01-2022-11-18.pkl')
-
-## 读取Pickle文件
+##### 读取Pickle文件
 df_original = pd.read_pickle('kbars_2330_2022-01-01-2022-11-18.pkl')
-
-
 #df.columns  ## Index(['Unnamed: 0', 'time', 'open', 'low', 'high', 'close', 'volume','amount'], dtype='object')
 df_original = df_original.drop('Unnamed: 0',axis=1)
-#df.columns  ## Index(['time', 'open', 'low', 'high', 'close', 'volume', 'amount'], dtype='object')
-#df['time']
-#type(df['time'])  ## pandas.core.series.Series
-#df['time'][11]
-#df.head()
-#df.tail()
-#type(df['time'][0])
 
 
-##### 選擇資料區間
+
+###### 選擇資料區間
 st.subheader("選擇開始與結束的日期, 區間:2022-01-03 至 2022-11-18")
 start_date = st.text_input('選擇開始日期 (日期格式: 2022-01-03)', '2022-01-03')
 end_date = st.text_input('選擇結束日期 (日期格式: 2022-11-18)', '2022-11-18')
@@ -54,19 +43,10 @@ end_date = datetime.datetime.strptime(end_date,'%Y-%m-%d')
 df = df_original[(df_original['time'] >= start_date) & (df_original['time'] <= end_date)]
 
 
-###### (2) 轉化為字典 ######:
+####### (2) 轉化為字典 #######
 KBar_dic = df.to_dict()
-#type(KBar_dic)
-#KBar_dic.keys()  ## dict_keys(['time', 'open', 'low', 'high', 'close', 'volume', 'amount'])
-#KBar_dic['open']
-#type(KBar_dic['open'])  ## dict
-#KBar_dic['open'].values()
-#type(KBar_dic['open'].values())  ## dict_values
 KBar_open_list = list(KBar_dic['open'].values())
 KBar_dic['open']=np.array(KBar_open_list)
-#type(KBar_dic['open'])  ## numpy.ndarray
-#KBar_dic['open'].shape  ## (1596,)
-#KBar_dic['open'].size   ##  1596
 
 KBar_dic['product'] = np.repeat('tsmc', KBar_dic['open'].size)
 #KBar_dic['product'].size   ## 1596
@@ -75,13 +55,6 @@ KBar_dic['product'] = np.repeat('tsmc', KBar_dic['open'].size)
 KBar_time_list = list(KBar_dic['time'].values())
 KBar_time_list = [i.to_pydatetime() for i in KBar_time_list] ## Timestamp to datetime
 KBar_dic['time']=np.array(KBar_time_list)
-
-# KBar_time_list[0]        ## Timestamp('2022-07-01 09:01:00')
-# type(KBar_time_list[0])  ## pandas._libs.tslibs.timestamps.Timestamp
-#KBar_time_list[0].to_pydatetime() ## datetime.datetime(2022, 7, 1, 9, 1)
-#KBar_time_list[0].to_numpy()      ## numpy.datetime64('2022-07-01T09:01:00.000000000')
-#KBar_dic['time']=np.array(KBar_time_list)
-#KBar_dic['time'][80]   ## Timestamp('2022-09-01 23:02:00')
 
 KBar_low_list = list(KBar_dic['low'].values())
 KBar_dic['low']=np.array(KBar_low_list)
@@ -99,30 +72,17 @@ KBar_amount_list = list(KBar_dic['amount'].values())
 KBar_dic['amount']=np.array(KBar_amount_list)
 
 
-######  (3) 改變 KBar 時間長度 (以下)  ########
-# Product_array = np.array([])
-# Time_array = np.array([])
-# Open_array = np.array([])
-# High_array = np.array([])
-# Low_array = np.array([])
-# Close_array = np.array([])
-# Volume_array = np.array([])
-
+#######  (3) 改變 KBar 時間長度  #######
+###### 改變日期資料型態
 Date = start_date.strftime("%Y-%m-%d")
-
+###### 設定 K 棒的時間長度(分鐘)
 st.subheader("設定一根 K 棒的時間長度(分鐘)")
 cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', key="KBar_duration")
 cycle_duration = int(cycle_duration)
-#cycle_duration = 1440   ## 可以改成你想要的 KBar 週期
-#KBar = indicator_f_Lo2.KBar(Date,'time',2)
+
+###### 進行 K 棒更新
 KBar = indicator_forKBar_short.KBar(Date,cycle_duration)    ## 設定cycle_duration可以改成你想要的 KBar 週期
-
-#KBar_dic['amount'].shape   ##(5585,)
-#KBar_dic['amount'].size    ##5585
-#KBar_dic['time'].size    ##5585
-
 for i in range(KBar_dic['time'].size):
-    
     #time = datetime.datetime.strptime(KBar_dic['time'][i],'%Y%m%d%H%M%S%f')
     time = KBar_dic['time'][i]
     #prod = KBar_dic['product'][i]
@@ -140,29 +100,8 @@ for i in range(KBar_dic['time'].size):
         #continue
     #print(KBar.Time,KBar.GetOpen(),KBar.GetHigh(),KBar.GetLow(),KBar.GetClose(),KBar.GetVolume()) 
     
-    
-        
-# #type(KBar.Time[1:-1]) ##numpy.ndarray       
-# Time_array =  np.append(Time_array, KBar.Time[1:-1])    
-# Open_array =  np.append(Open_array,KBar.Open[1:-1])
-# High_array =  np.append(High_array,KBar.High[1:-1])
-# Low_array =  np.append(Low_array,KBar.Low[1:-1])
-# Close_array =  np.append(Close_array,KBar.Close[1:-1])
-# Volume_array =  np.append(Volume_array,KBar.Volume[1:-1])
-# Product_array = np.append(Product_array,KBar.Prod[1:-1])
-
+###### 形成 KBar 字典 (新週期的):
 KBar_dic = {}
-
-# ## 形成 KBar 字典:
-# KBar_dic['time'] =  Time_array   
-# KBar_dic['product'] =  Product_array
-# KBar_dic['open'] =  Open_array
-# KBar_dic['high'] =  High_array
-# KBar_dic['low'] =  Low_array
-# KBar_dic['close'] =  Close_array
-# KBar_dic['volume'] =  Volume_array
-
- ## 形成 KBar 字典 (新週期的):
 KBar_dic['time'] =  KBar.TAKBar['time']   
 #KBar_dic['product'] =  KBar.TAKBar['product']
 KBar_dic['product'] = np.repeat('tsmc', KBar_dic['time'].size)
@@ -171,52 +110,41 @@ KBar_dic['high'] =  KBar.TAKBar['high']
 KBar_dic['low'] =  KBar.TAKBar['low']
 KBar_dic['close'] =  KBar.TAKBar['close']
 KBar_dic['volume'] =  KBar.TAKBar['volume']
-# KBar_dic['time'].shape  ## (2814,)
-# KBar_dic['open'].shape  ## (2814,)
-# KBar_dic['high'].shape  ## (2814,)
-# KBar_dic['low'].shape  ## (2814,)
-# KBar_dic['close'].shape  ## (2814,)
-# KBar_dic['volume'].shape  ## (2814,)
-#KBar_dic['time'][536]
-######  改變 KBar 時間長度 (以上)  ########
 
 
 
-###### (4) 計算各種技術指標 ######
-##### 將K線 Dictionary 轉換成 Dataframe
+
+
+####### (4) 計算各種技術指標 #######
+###### 將K線 Dictionary 轉換成 Dataframe
 KBar_df = pd.DataFrame(KBar_dic)
 
-
-#####  (i) 移動平均線策略   #####
-####  設定長短移動平均線的 K棒 長度:
+######  (i) 移動平均線策略   
+#####  設定長短移動平均線的 K棒 長度:
 st.subheader("設定計算長移動平均線(MA)的 K 棒數目(整數, 例如 10)")
-#LongMAPeriod=st.number_input('輸入一個整數', key="Long_MA")
-#LongMAPeriod=int(LongMAPeriod)
 LongMAPeriod=st.slider('選擇一個整數', 0, 100, 10)
 st.subheader("設定計算短移動平均線(MA)的 K 棒數目(整數, 例如 2)")
-#ShortMAPeriod=st.number_input('輸入一個整數', key="Short_MA")
-#ShortMAPeriod=int(ShortMAPeriod)
 ShortMAPeriod=st.slider('選擇一個整數', 0, 100, 2)
 
-#### 計算長短移動平均線
+##### 計算長短移動平均線
 KBar_df['MA_long'] = KBar_df['close'].rolling(window=LongMAPeriod).mean()
 KBar_df['MA_short'] = KBar_df['close'].rolling(window=ShortMAPeriod).mean()
 
-#### 尋找最後 NAN值的位置
+##### 尋找最後 NAN值的位置
 last_nan_index_MA = KBar_df['MA_long'][::-1].index[KBar_df['MA_long'][::-1].apply(pd.isna)][0]
 
 
 
-#####  (ii) RSI 策略   #####
-#### 順勢策略
-### 設定長短 RSI 的 K棒 長度:
+######  (ii) RSI 策略   
+##### 順勢策略
+#### 設定長短 RSI 的 K棒 長度:
 st.subheader("設定計算長RSI的 K 棒數目(整數, 例如 10)")
 LongRSIPeriod=st.slider('選擇一個整數', 0, 1000, 10)
 st.subheader("設定計算短RSI的 K 棒數目(整數, 例如 2)")
 ShortRSIPeriod=st.slider('選擇一個整數', 0, 1000, 2)
 
-### 計算 RSI指標長短線, 以及定義中線
-## 假设 df 是一个包含价格数据的Pandas DataFrame，其中 'close' 是KBar週期收盤價
+#### 計算 RSI指標長短線, 以及定義中線
+### 假设 df 是一个包含价格数据的Pandas DataFrame，其中 'close' 是KBar週期收盤價
 def calculate_rsi(df, period=14):
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
@@ -230,14 +158,14 @@ KBar_df['RSI_long'] = calculate_rsi(KBar_df, LongRSIPeriod)
 KBar_df['RSI_short'] = calculate_rsi(KBar_df, ShortRSIPeriod)
 KBar_df['RSI_Middle']=np.array([50]*len(KBar_dic['time']))
 
-### 尋找最後 NAN值的位置
+#### 尋找最後 NAN值的位置
 last_nan_index_RSI = KBar_df['RSI_long'][::-1].index[KBar_df['RSI_long'][::-1].apply(pd.isna)][0]
 
 
-# #### 逆勢策略
-# ### 建立部位管理物件
+# ##### 逆勢策略
+# #### 建立部位管理物件
 # OrderRecord=Record() 
-# ### 計算 RSI指標, 天花板與地板
+# #### 計算 RSI指標, 天花板與地板
 # RSIPeriod=5
 # Ceil=80
 # Floor=20
@@ -246,15 +174,15 @@ last_nan_index_RSI = KBar_df['RSI_long'][::-1].index[KBar_df['RSI_long'][::-1].a
 # KBar_dic['Ceil']=np.array([Ceil]*len(KBar_dic['time']))
 # KBar_dic['Floor']=np.array([Floor]*len(KBar_dic['time']))
 
-# ### 將K線 Dictionary 轉換成 Dataframe
+# #### 將K線 Dictionary 轉換成 Dataframe
 # KBar_RSI_df=pd.DataFrame(KBar_dic)
 
 
-###### (5) 將 Dataframe 欄位名稱轉換  ###### 
+####### (5) 將 Dataframe 欄位名稱轉換  ####### 
 KBar_df.columns = [ i[0].upper()+i[1:] for i in KBar_df.columns ]
 
 
-###### (6) 畫圖 ######
+####### (6) 畫圖 #######
 st.subheader("畫圖")
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -263,7 +191,7 @@ import pandas as pd
 import plotly.offline as pyoff
 
 
-##### K線圖, 移動平均線 MA
+###### K線圖, 移動平均線MA
 with st.expander("K線圖, 移動平均線"):
     fig1 = make_subplots(specs=[[{"secondary_y": True}]])
     
@@ -284,7 +212,7 @@ with st.expander("K線圖, 移動平均線"):
     st.plotly_chart(fig1, use_container_width=True)
 
 
-##### K線圖, RSI
+###### K線圖, RSI
 with st.expander("K線圖, 長短 RSI"):
     fig2 = make_subplots(specs=[[{"secondary_y": True}]])
     #### include candlestick with rangeselector
