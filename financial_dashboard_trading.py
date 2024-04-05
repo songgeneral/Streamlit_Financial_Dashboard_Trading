@@ -336,8 +336,8 @@ with st.expander("K線圖, 布林通道"):
 
 
 
-###### K線圖, MACD
-with st.expander("K線圖, MACD(異同移動平均線)"):
+###### MACD
+with st.expander("MACD(異同移動平均線)"):
     fig4 = make_subplots(specs=[[{"secondary_y": True}]])
     
     # #### include candlestick with rangeselector
