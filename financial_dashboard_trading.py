@@ -21,9 +21,9 @@ import streamlit.components.v1 as stc
 ####### (1) 開始設定 #######
 ###### 設定網頁標題介面 
 html_temp = """
-		<div style="background-color:#FFB6C1;padding:10px;border-radius:10px">   ## #3872fb
-		<h1 style="color:white;text-align:center;">金融資料視覺化看板 </h1>
-		<h2 style="color:white;text-align:center;">Financial Dashboard </h2>
+		<div style="background-color:#FFB6C1;padding:10px;border-radius:10px">   
+		<h1 style="color:black;text-align:center;">金融資料視覺化看板 </h1>
+		<h2 style="color:black;text-align:center;">Financial Dashboard </h2>
 		</div>
 		"""
 stc.html(html_temp)
