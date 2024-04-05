@@ -133,7 +133,13 @@ KBar_dic = Change_Cycle(Date,cycle_duration,KBar_dic)   ## 設定cycle_duration�
 ###### 將K線 Dictionary 轉換成 Dataframe
 KBar_df = pd.DataFrame(KBar_dic)
 
-######  (i) 移動平均線策略   
+######  (i) 移動平均線策略 
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def Calculate_MA(df, period=14):
+    ##### 計算長短移動平均線
+    ma = df['close'].rolling(window=period).mean()
+    return ma
+  
 #####  設定長短移動平均線的 K棒 長度:
 st.subheader("設定計算長移動平均線(MA)的 K 棒數目(整數, 例如 10)")
 LongMAPeriod=st.slider('選擇一個整數', 0, 100, 10)
@@ -141,15 +147,26 @@ st.subheader("設定計算短移動平均線(MA)的 K 棒數目(整數, 例如 2
 ShortMAPeriod=st.slider('選擇一個整數', 0, 100, 2)
 
 ##### 計算長短移動平均線
-KBar_df['MA_long'] = KBar_df['close'].rolling(window=LongMAPeriod).mean()
-KBar_df['MA_short'] = KBar_df['close'].rolling(window=ShortMAPeriod).mean()
+KBar_df['MA_long'] = Calculate_MA(KBar_df, period=LongMAPeriod)
+KBar_df['MA_short'] = Calculate_MA(KBar_df, period=ShortMAPeriod)
 
 ##### 尋找最後 NAN值的位置
 last_nan_index_MA = KBar_df['MA_long'][::-1].index[KBar_df['MA_long'][::-1].apply(pd.isna)][0]
 
 
 
-######  (ii) RSI 策略   
+######  (ii) RSI 策略 
+##### 假设 df 是一个包含价格数据的Pandas DataFrame，其中 'close' 是KBar週期收盤價
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def Calculate_RSI(df, period=14):
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
+  
 ##### 順勢策略
 #### 設定長短 RSI 的 K棒 長度:
 st.subheader("設定計算長RSI的 K 棒數目(整數, 例如 10)")
@@ -158,19 +175,8 @@ st.subheader("設定計算短RSI的 K 棒數目(整數, 例如 2)")
 ShortRSIPeriod=st.slider('選擇一個整數', 0, 1000, 2)
 
 #### 計算 RSI指標長短線, 以及定義中線
-### 假设 df 是一个包含价格数据的Pandas DataFrame，其中 'close' 是KBar週期收盤價
-@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
-def calculate_rsi(df, period=14):
-    delta = df['close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-
-    rs = gain / loss
-    rsi = 100 - (100 / (1 + rs))
-    return rsi
-
-KBar_df['RSI_long'] = calculate_rsi(KBar_df, LongRSIPeriod)
-KBar_df['RSI_short'] = calculate_rsi(KBar_df, ShortRSIPeriod)
+KBar_df['RSI_long'] = Calculate_RSI(KBar_df, LongRSIPeriod)
+KBar_df['RSI_short'] = Calculate_RSI(KBar_df, ShortRSIPeriod)
 KBar_df['RSI_Middle']=np.array([50]*len(KBar_dic['time']))
 
 #### 尋找最後 NAN值的位置
@@ -193,7 +199,7 @@ last_nan_index_RSI = KBar_df['RSI_long'][::-1].index[KBar_df['RSI_long'][::-1].a
 # KBar_RSI_df=pd.DataFrame(KBar_dic)
 
 
-####### (5) 將 Dataframe 欄位名稱轉換  ####### 
+####### (5) 將 Dataframe 欄位名稱轉換(第一個字母大寫)  ####### 
 KBar_df.columns = [ i[0].upper()+i[1:] for i in KBar_df.columns ]
 
 
