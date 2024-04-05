@@ -230,6 +230,32 @@ KBar_df = Calculate_Bollinger_Bands(KBar_df, period, num_std_dev)
 last_nan_index_BB = KBar_df['SMA'][::-1].index[KBar_df['SMA'][::-1].apply(pd.isna)][0]
 
 
+######  (iv) MACD(異同移動平均線) 策略 
+# 假设df是包含价格数据的Pandas DataFrame，'price'列是每日收盘价格
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def Calculate_MACD(df, fast_period=12, slow_period=26, signal_period=9):
+    df['EMA_Fast'] = df['close'].ewm(span=fast_period, adjust=False).mean()
+    df['EMA_Slow'] = df['close'].ewm(span=slow_period, adjust=False).mean()
+    df['MACD'] = df['EMA_Fast'] - df['EMA_Slow']  ## DIF
+    df['Signal_Line'] = df['MACD'].ewm(span=signal_period, adjust=False).mean()   ## DEA或信號線
+    df['MACD_Histogram'] = df['MACD'] - df['Signal_Line']  ## MACD = DIF-DEA
+    return df
+
+#####  設定MACD三種週期的K棒長度:
+st.subheader("設定計算 MACD的快速線週期(例如 12根日K)")
+fast_period = st.slider('選擇一個整數', 0, 100, 12)
+st.subheader("設定計算 MACD的慢速線週期(例如 26根日K)")
+slow_period = st.slider('選擇一個整數', 0, 100, 26)
+st.subheader("設定計算 MACD的訊號線週期(例如 9根日K)")
+signal_period = st.slider('選擇一個整數', 0, 100, 9)
+
+##### 計算MACD:
+KBar_df = Calculate_MACD(KBar_df, fast_period, slow_period, signal_period)
+
+##### 尋找最後 NAN值的位置
+last_nan_index_MACD = KBar_df['EMA_Slow'][::-1].index[KBar_df['EMA_Slow'][::-1].apply(pd.isna)][0]
+
+
 
 
 ####### (5) 將 Dataframe 欄位名稱轉換(第一個字母大寫)  ####### 
@@ -291,17 +317,38 @@ with st.expander("K線圖, 布林通道"):
                     open=KBar_df['Open'], high=KBar_df['High'],
                     low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
                    secondary_y=True)    
-    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['SMA'][last_nan_index_BB+1:], mode='lines',line=dict(color='black', width=2), name='Middle'), 
+    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['SMA'][last_nan_index_BB+1:], mode='lines',line=dict(color='black', width=2), name='布林通道中軌道'), 
                   secondary_y=False)
-    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Upper_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='red', width=2), name='Upperband'), 
+    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Upper_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='red', width=2), name='布林通道上軌道'), 
                   secondary_y=False)
-    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Lower_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='blue', width=2), name='Lowerband'), 
+    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Lower_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='blue', width=2), name='布林通道下軌道'), 
                   secondary_y=False)
     
     fig3.layout.yaxis2.showgrid=True
 
     st.plotly_chart(fig3, use_container_width=True)
 
+
+
+###### K線圖, MACD
+with st.expander("K線圖, MACD(異同移動平均線)"):
+    fig4 = make_subplots(specs=[[{"secondary_y": True}]])
+    
+    #### include candlestick with rangeselector
+    fig4.add_trace(go.Candlestick(x=KBar_df['Time'],
+                    open=KBar_df['Open'], high=KBar_df['High'],
+                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+                   secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
+    
+    #### include a go.Bar trace for volumes
+    fig4.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['MACD_Histogram'], name='MACD Histogram', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
+    fig4.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MACD+1:], y=KBar_df['Signal_Line'][last_nan_index_MACD+1:], mode='lines',line=dict(color='orange', width=2), name='訊號線(DEA)'), 
+                  secondary_y=True)
+    fig4.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MACD+1:], y=KBar_df['MACD'][last_nan_index_MACD+1:], mode='lines',line=dict(color='pink', width=2), name='DIF'), 
+                  secondary_y=True)
+    
+    fig4.layout.yaxis2.showgrid=True
+    st.plotly_chart(fig4, use_container_width=True)
 
 
 
