@@ -219,8 +219,8 @@ def Calculate_Bollinger_Bands(df, period=20, num_std_dev=2):
 
 #####  設定長短移動平均線的 K棒 長度:
 st.subheader("設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)")
-period = st.slider('選擇一個整數', 0, 100, 20)
-st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)")
+period = st.slider('選擇一個整數', 0, 100, 20, key='BB_period')
+st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)", key='BB_heigh')
 num_std_dev = st.slider('選擇一個整數', 0, 100, 2)
 
 ##### 計算布林通道上中下通道:
