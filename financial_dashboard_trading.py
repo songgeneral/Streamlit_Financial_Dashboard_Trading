@@ -254,7 +254,7 @@ KBar_df = Calculate_MACD(KBar_df, fast_period, slow_period, signal_period)
 
 ##### 尋找最後 NAN值的位置
 # last_nan_index_MACD = KBar_df['MACD'][::-1].index[KBar_df['MACD'][::-1].apply(pd.isna)][0]
-#### 尝试找到最后一个 NaN 值的索引，但在这之前要检查是否存在 NaN 值
+#### 試著找出最後一個 NaN 值的索引，但在這之前要檢查是否有 NaN 值
 nan_indexes_MACD = KBar_df['MACD'][::-1].index[KBar_df['MACD'][::-1].apply(pd.isna)]
 if len(nan_indexes_MACD) > 0:
     last_nan_index_MACD = nan_indexes_MACD[0]
@@ -340,11 +340,11 @@ with st.expander("K線圖, 布林通道"):
 with st.expander("K線圖, MACD(異同移動平均線)"):
     fig4 = make_subplots(specs=[[{"secondary_y": True}]])
     
-    #### include candlestick with rangeselector
-    fig4.add_trace(go.Candlestick(x=KBar_df['Time'],
-                    open=KBar_df['Open'], high=KBar_df['High'],
-                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
-                   secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
+    # #### include candlestick with rangeselector
+    # fig4.add_trace(go.Candlestick(x=KBar_df['Time'],
+    #                 open=KBar_df['Open'], high=KBar_df['High'],
+    #                 low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+    #                secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
     #### include a go.Bar trace for volumes
     fig4.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['MACD_Histogram'], name='MACD Histogram', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
