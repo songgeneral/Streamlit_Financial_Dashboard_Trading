@@ -49,32 +49,38 @@ df = df_original[(df_original['time'] >= start_date) & (df_original['time'] <= e
 
 
 ####### (2) 轉化為字典 #######
-KBar_dic = df.to_dict()
-KBar_open_list = list(KBar_dic['open'].values())
-KBar_dic['open']=np.array(KBar_open_list)
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def To_Dictionary_1(df):
+    KBar_dic = df.to_dict()
+    KBar_open_list = list(KBar_dic['open'].values())
+    KBar_dic['open']=np.array(KBar_open_list)
+    
+    KBar_dic['product'] = np.repeat('tsmc', KBar_dic['open'].size)
+    #KBar_dic['product'].size   ## 1596
+    #KBar_dic['product'][0]      ## 'tsmc'
+    
+    KBar_time_list = list(KBar_dic['time'].values())
+    KBar_time_list = [i.to_pydatetime() for i in KBar_time_list] ## Timestamp to datetime
+    KBar_dic['time']=np.array(KBar_time_list)
+    
+    KBar_low_list = list(KBar_dic['low'].values())
+    KBar_dic['low']=np.array(KBar_low_list)
+    
+    KBar_high_list = list(KBar_dic['high'].values())
+    KBar_dic['high']=np.array(KBar_high_list)
+    
+    KBar_close_list = list(KBar_dic['close'].values())
+    KBar_dic['close']=np.array(KBar_close_list)
+    
+    KBar_volume_list = list(KBar_dic['volume'].values())
+    KBar_dic['volume']=np.array(KBar_volume_list)
+    
+    KBar_amount_list = list(KBar_dic['amount'].values())
+    KBar_dic['amount']=np.array(KBar_amount_list)
+    
+    return KBar_dic
 
-KBar_dic['product'] = np.repeat('tsmc', KBar_dic['open'].size)
-#KBar_dic['product'].size   ## 1596
-#KBar_dic['product'][0]      ## 'tsmc'
-
-KBar_time_list = list(KBar_dic['time'].values())
-KBar_time_list = [i.to_pydatetime() for i in KBar_time_list] ## Timestamp to datetime
-KBar_dic['time']=np.array(KBar_time_list)
-
-KBar_low_list = list(KBar_dic['low'].values())
-KBar_dic['low']=np.array(KBar_low_list)
-
-KBar_high_list = list(KBar_dic['high'].values())
-KBar_dic['high']=np.array(KBar_high_list)
-
-KBar_close_list = list(KBar_dic['close'].values())
-KBar_dic['close']=np.array(KBar_close_list)
-
-KBar_volume_list = list(KBar_dic['volume'].values())
-KBar_dic['volume']=np.array(KBar_volume_list)
-
-KBar_amount_list = list(KBar_dic['amount'].values())
-KBar_dic['amount']=np.array(KBar_amount_list)
+KBar_dic = To_Dictionary_1(df)
 
 
 #######  (3) 改變 KBar 時間長度  #######
@@ -150,6 +156,7 @@ ShortRSIPeriod=st.slider('選擇一個整數', 0, 1000, 2)
 
 #### 計算 RSI指標長短線, 以及定義中線
 ### 假设 df 是一个包含价格数据的Pandas DataFrame，其中 'close' 是KBar週期收盤價
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
 def calculate_rsi(df, period=14):
     delta = df['close'].diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
