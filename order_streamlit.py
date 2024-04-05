@@ -135,14 +135,23 @@ class Record():
         return len(self.Profit)
     # 取得平均交易盈虧(每次)
     def GetAverageProfit(self): 
-        return sum(self.Profit)/len(self.Profit)
+        if len(self.Profit)>0:
+            return sum(self.Profit)/len(self.Profit)
+        else:
+            return 0
     # 取得交易 "平均" 投資報酬率
-    def GetAverageProfitRate(self):       
-        return sum(self.Profit_rate)/len(self.Profit_rate)
+    def GetAverageProfitRate(self): 
+        if len(self.Profit_rate)>0:
+            return sum(self.Profit_rate)/len(self.Profit_rate)
+        else:
+            return 0
     # 取得勝率
     def GetWinRate(self):
         WinProfit = [ i for i in self.Profit if i > 0 ]
-        return len(WinProfit)/len(self.Profit)
+        if len(self.Profit)>0:
+            return len(WinProfit)/len(self.Profit)
+        else:
+            return 0
     # 最大連續虧損
     def GetAccLoss(self):
         AccLoss = 0
@@ -176,11 +185,18 @@ class Record():
     # 平均獲利(只看獲利的) 
     def GetAverEarn(self):
         WinProfit = [ i for i in self.Profit if i > 0 ]
-        return sum(WinProfit)/len(WinProfit)
+        if len(WinProfit)>0:
+            return sum(WinProfit)/len(WinProfit)
+        else:
+            return 0
+        
     # 平均虧損(只看虧損的)
     def GetAverLoss(self):
         FailProfit = [ i for i in self.Profit if i < 0 ]
-        return sum(FailProfit)/len(FailProfit)
+        if len(FailProfit)>0:
+            return sum(FailProfit)/len(FailProfit)
+        else:
+            return 0
     # 累計盈虧
     def GetCumulativeProfit(self):
         TotalProfit=[0]
