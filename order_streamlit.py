@@ -208,10 +208,12 @@ class Record():
         for i in self.Profit:
             TotalProfit.append(TotalProfit[-1]+i)
         # 繪製圖形
-        ax1.plot( TotalProfit  , '-', linewidth=1 )
+        ax1.plot( TotalProfit  , '-', marker='o', linewidth=1 )
         #定義標頭
         # ax1.set_title('Profit')
         ax1.set_title('累計盈虧')
+        ax1.set_xlabel('交易編號')
+        ax1.set_xlabel('累計盈虧(元/每股)')
         # plt.show()    # 顯示繪製圖表
         # plt.savefig(StrategyName+'.png') #儲存繪製圖表
         ### 在Streamlit中显示
