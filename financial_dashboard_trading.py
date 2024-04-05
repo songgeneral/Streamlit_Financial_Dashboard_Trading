@@ -142,15 +142,15 @@ KBar_df = pd.DataFrame(KBar_dic)
 
 ######  (i) 移動平均線策略 
 @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
-def Calculate_MA(df, period=14):
+def Calculate_MA(df, period=10):
     ##### 計算長短移動平均線
     ma = df['close'].rolling(window=period).mean()
     return ma
   
 #####  設定長短移動平均線的 K棒 長度:
-st.subheader("設定計算長移動平均線(MA)的 K 棒數目(整數, 例如 10)")
+st.subheader("設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)")
 LongMAPeriod=st.slider('選擇一個整數', 0, 100, 10)
-st.subheader("設定計算短移動平均線(MA)的 K 棒數目(整數, 例如 2)")
+st.subheader("設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)")
 ShortMAPeriod=st.slider('選擇一個整數', 0, 100, 2)
 
 ##### 計算長短移動平均線
@@ -176,9 +176,9 @@ def Calculate_RSI(df, period=14):
   
 ##### 順勢策略
 #### 設定長短 RSI 的 K棒 長度:
-st.subheader("設定計算長RSI的 K 棒數目(整數, 例如 10)")
+st.subheader("設定計算長RSI的 K棒週期數目(整數, 例如 10)")
 LongRSIPeriod=st.slider('選擇一個整數', 0, 1000, 10)
-st.subheader("設定計算短RSI的 K 棒數目(整數, 例如 2)")
+st.subheader("設定計算短RSI的 K棒週期數目(整數, 例如 2)")
 ShortRSIPeriod=st.slider('選擇一個整數', 0, 1000, 2)
 
 #### 計算 RSI指標長短線, 以及定義中線
@@ -204,6 +204,32 @@ last_nan_index_RSI = KBar_df['RSI_long'][::-1].index[KBar_df['RSI_long'][::-1].a
 
 # #### 將K線 Dictionary 轉換成 Dataframe
 # KBar_RSI_df=pd.DataFrame(KBar_dic)
+
+
+######  (iii) Bollinger Band (布林通道) 策略 
+##### 假设df是包含价格数据的Pandas DataFrame，'close'列是每日收盘价格
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def Calculate_Bollinger_Bands(df, period=20, num_std_dev=2):
+    df['SMA'] = df['close'].rolling(window=period).mean()
+    df['Standard_Deviation'] = df['close'].rolling(window=period).std()
+    df['Upper_Band'] = df['SMA'] + (df['Standard_Deviation'] * num_std_dev)
+    df['Lower_Band'] = df['SMA'] - (df['Standard_Deviation'] * num_std_dev)
+    return df
+
+
+#####  設定長短移動平均線的 K棒 長度:
+st.subheader("設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)")
+period = st.slider('選擇一個整數', 0, 100, 20)
+st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)")
+num_std_dev = st.slider('選擇一個整數', 0, 100, 2)
+
+##### 計算布林通道上中下通道:
+KBar_df = Calculate_Bollinger_Bands(KBar_df, period, num_std_dev)
+
+##### 尋找最後 NAN值的位置
+last_nan_index_BB = KBar_df['SMA'][::-1].index[KBar_df['SMA'][::-1].apply(pd.isna)][0]
+
+
 
 
 ####### (5) 將 Dataframe 欄位名稱轉換(第一個字母大寫)  ####### 
@@ -256,6 +282,25 @@ with st.expander("K線圖, 長短 RSI"):
     
     fig2.layout.yaxis2.showgrid=True
     st.plotly_chart(fig2, use_container_width=True)
+    
+
+###### K線圖, Bollinger Band    
+with st.expander("K線圖, 布林通道"):
+    fig3 = make_subplots(specs=[[{"secondary_y": True}]])
+    fig3.add_trace(go.Candlestick(x=KBar_df['Time'],
+                    open=KBar_df['Open'], high=KBar_df['High'],
+                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+                   secondary_y=True)    
+    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['SMA'][last_nan_index_BB+1:], mode='lines',line=dict(color='black', width=2), name='Middle'), 
+                  secondary_y=False)
+    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Upper_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='red', width=2), name='Upperband'), 
+                  secondary_y=False)
+    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Lower_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='blue', width=2), name='Lowerband'), 
+                  secondary_y=False)
+    
+    fig3.layout.yaxis2.showgrid=True
+
+    st.plotly_chart(fig3, use_container_width=True)
 
 
 
