@@ -128,7 +128,7 @@ def Change_Cycle(Date,cycle_duration,KBar_dic):
 Date = start_date.strftime("%Y-%m-%d")
 
 ###### 設定 K 棒的時間長度(分鐘)
-st.subheader("設定一根 K 棒的時間長度(分鐘)")
+st.subheader("設定參數:")
 cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', key="KBar_duration")
 cycle_duration = int(cycle_duration)
 
@@ -149,10 +149,10 @@ def Calculate_MA(df, period=10):
     return ma
   
 #####  設定長短移動平均線的 K棒 長度:
-st.subheader("設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)")
-LongMAPeriod=st.slider('選擇一個整數', 0, 100, 10)
-st.subheader("設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)")
-ShortMAPeriod=st.slider('選擇一個整數', 0, 100, 2)
+# st.subheader("設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)")
+LongMAPeriod=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10)
+# st.subheader("設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)")
+ShortMAPeriod=st.slider('設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)', 0, 100, 2)
 
 ##### 計算長短移動平均線
 KBar_df['MA_long'] = Calculate_MA(KBar_df, period=LongMAPeriod)
@@ -177,10 +177,10 @@ def Calculate_RSI(df, period=14):
   
 ##### 順勢策略
 #### 設定長短 RSI 的 K棒 長度:
-st.subheader("設定計算長RSI的 K棒週期數目(整數, 例如 10)")
-LongRSIPeriod=st.slider('選擇一個整數', 0, 1000, 10)
-st.subheader("設定計算短RSI的 K棒週期數目(整數, 例如 2)")
-ShortRSIPeriod=st.slider('選擇一個整數', 0, 1000, 2)
+# st.subheader("設定計算長RSI的 K棒週期數目(整數, 例如 10)")
+LongRSIPeriod=st.slider('設定計算長RSI的 K棒週期數目(整數, 例如 10)', 0, 1000, 10)
+# st.subheader("設定計算短RSI的 K棒週期數目(整數, 例如 2)")
+ShortRSIPeriod=st.slider('設定計算短RSI的 K棒週期數目(整數, 例如 2)', 0, 1000, 2)
 
 #### 計算 RSI指標長短線, 以及定義中線
 KBar_df['RSI_long'] = Calculate_RSI(KBar_df, LongRSIPeriod)
@@ -219,10 +219,10 @@ def Calculate_Bollinger_Bands(df, period=20, num_std_dev=2):
 
 
 #####  設定長短移動平均線的 K棒 長度:
-st.subheader("設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)")
-period = st.slider('選擇一個整數', 0, 100, 20, key='BB_period')
-st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)")
-num_std_dev = st.slider('選擇一個整數', 0, 100, 2, key='BB_heigh')
+# st.subheader("設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)")
+period = st.slider('設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)', 0, 100, 20, key='BB_period')
+# st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)")
+num_std_dev = st.slider('設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)', 0, 100, 2, key='BB_heigh')
 
 ##### 計算布林通道上中下通道:
 KBar_df = Calculate_Bollinger_Bands(KBar_df, period, num_std_dev)
@@ -243,12 +243,12 @@ def Calculate_MACD(df, fast_period=12, slow_period=26, signal_period=9):
     return df
 
 #####  設定MACD三種週期的K棒長度:
-st.subheader("設定計算 MACD的快速線週期(例如 12根日K)")
-fast_period = st.slider('選擇一個整數', 0, 100, 12)
-st.subheader("設定計算 MACD的慢速線週期(例如 26根日K)")
-slow_period = st.slider('選擇一個整數', 0, 100, 26)
-st.subheader("設定計算 MACD的訊號線週期(例如 9根日K)")
-signal_period = st.slider('選擇一個整數', 0, 100, 9)
+# st.subheader("設定計算 MACD的快速線週期(例如 12根日K)")
+fast_period = st.slider('設定計算 MACD的快速線週期(例如 12根日K)', 0, 100, 12)
+# st.subheader("設定計算 MACD的慢速線週期(例如 26根日K)")
+slow_period = st.slider('設定計算 MACD的慢速線週期(例如 26根日K)', 0, 100, 26)
+# st.subheader("設定計算 MACD的訊號線週期(例如 9根日K)")
+signal_period = st.slider('設定計算 MACD的訊號線週期(例如 9根日K)', 0, 100, 9)
 
 ##### 計算MACD:
 KBar_df = Calculate_MACD(KBar_df, fast_period, slow_period, signal_period)
@@ -438,7 +438,7 @@ OrderRecord.GetCumulativeProfit_rate()    ## 累計投資報酬率
 
 ## 将这些数值存储成一个DataFrame
 data = {
-    "項目": ["交易總盈虧", "平均每次盈虧", "平均投資報酬率", "平均獲利(只看獲利的)", "平均虧損(只看虧損的)", "勝率", "最大連續虧損", "最大盈虧回落(MDD)", "報酬風險比"],
+    "項目": ["交易總盈虧", "平均每次盈虧", "平均投資報酬率", "平均獲利(只看獲利的)", "平均虧損(只看虧損的)", "勝率", "最大連續虧損", "最大盈虧回落(MDD)", "報酬風險比(交易總盈虧/最大盈虧回落_MDD)"],
     "數值": [交易總盈虧, 平均每次盈虧, 平均投資報酬率, 平均獲利_只看獲利的, 平均虧損_只看虧損的, 勝率, 最大連續虧損, 最大盈虧回落_MDD, 報酬風險比]
 }
 df = pd.DataFrame(data)
@@ -446,7 +446,19 @@ st.write(df)
 
 
 
-
+# ###### 累計盈虧 & 累計投資報酬率
+# with st.expander("累計盈虧 & 累計投資報酬率"):
+#     fig4 = make_subplots(specs=[[{"secondary_y": True}]])
+    
+#     #### include a go.Bar trace for volumes
+#     # fig4.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['MACD_Histogram'], name='MACD Histogram', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
+#     fig4.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MACD+1:], y=KBar_df['Signal_Line'][last_nan_index_MACD+1:], mode='lines',line=dict(color='orange', width=2), name='訊號線(DEA)'), 
+#                   secondary_y=True)
+#     fig4.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MACD+1:], y=KBar_df['MACD'][last_nan_index_MACD+1:], mode='lines',line=dict(color='pink', width=2), name='DIF'), 
+#                   secondary_y=True)
+    
+#     fig4.layout.yaxis2.showgrid=True
+#     st.plotly_chart(fig4, use_container_width=True)
 
 
 # ## 畫累計盈虧圖:
