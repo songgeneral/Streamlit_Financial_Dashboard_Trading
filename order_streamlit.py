@@ -219,7 +219,7 @@ class Record():
         matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
         
         #### 定義圖表
-        ax1 = plt.subplot(111)
+        ax1 = plt.subplot(211)
         
         #### 計算累計績效
         TotalProfit=[0]
@@ -259,7 +259,7 @@ class Record():
         matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
         
         #### 定義圖表
-        ax2 = plt.subplot(111)
+        ax2 = plt.subplot(212)
         
         #### 計算累計投資報酬率
         TotalProfit_rate=[0]
