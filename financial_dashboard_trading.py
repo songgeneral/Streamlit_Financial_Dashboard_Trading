@@ -564,7 +564,7 @@ matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 plt.figure()
 
-#### 計算累計績效
+#### 計算累計計投資報酬
 TotalProfit_rate=[0]
 for i in OrderRecord.Profit_rate:
     TotalProfit.append(TotalProfit_rate[-1]+i)
