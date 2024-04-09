@@ -433,8 +433,8 @@ OrderRecord.GetCumulativeProfit()         ## 累計盈虧
 OrderRecord.GetCumulativeProfit_rate()    ## 累計投資報酬率
 
 
-## 畫累計盈虧圖:
-OrderRecord.GeneratorProfitChart(StrategyName='MA')
+# ## 畫累計盈虧圖:
+# OrderRecord.GeneratorProfitChart(StrategyName='MA')
 
 
 ## 畫累計投資報酬率圖:
