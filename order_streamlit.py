@@ -210,7 +210,7 @@ class Record():
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         return TotalProfit_rate
     ## 產出交易績效圖(累計盈虧)
-    def GeneratorProfitChart(self, StrategyName='Strategy'):
+    def GeneratorProfitChart(self, choice='stock', StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
         # matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']
@@ -229,16 +229,22 @@ class Record():
         
         #### 繪製圖形
         # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
-        plt.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+        if choice == 'stock':
+            plt.plot( TotalProfit[1:]*1000 , '-', marker='o', linewidth=1 )
+        if choice == 'future1':
+            plt.plot( TotalProfit[1:]*200 , '-', marker='o', linewidth=1 )
+        if choice == 'future2':
+            plt.plot( TotalProfit[1:]*50 , '-', marker='o', linewidth=1 )
+            
         
         ####定義標頭
         # # ax.set_title('Profit')
         # ax.set_title('累計盈虧')
         # ax.set_xlabel('交易編號')
         # ax.set_ylabel('累計盈虧(元/每股)')
-        plt.title('累計盈虧')
+        plt.title('累計盈虧(元)')
         plt.xlabel('交易編號')
-        plt.ylabel('累計盈虧(元/每股)')
+        plt.ylabel('累計盈虧(元)')
         
         
         
