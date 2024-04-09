@@ -379,7 +379,8 @@ with st.expander("MACD(異同移動平均線)"):
 
 ####### (7) 程式交易 #######
 st.subheader("程式交易: (1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損.")
-MoveStopLoss = st.slider('選擇程式交易停損金額(例如30元, 進場做多, 停損價格為目前價格減30)', 0, 100, 30)
+MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損量為目前每股價格減30元; 大小台指進場做多時, 取30代表停損量為目前台股指數減30點)', 0, 100, 30)
+Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1)
 
 ###### 建立部位管理物件
 OrderRecord=Record() 
@@ -389,6 +390,7 @@ OrderRecord=Record()
 KBar_dic = KBar_df.to_dict('list')
 
 ###### 開始回測
+
 for n in range(0,len(KBar_dic['Time'])-1):
     # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
     if not np.isnan( KBar_dic['MA_long'][n-1] ) :
@@ -396,64 +398,78 @@ for n in range(0,len(KBar_dic['Time'])-1):
         if OrderRecord.GetOpenInterest()==0 :
             # 多單進場: 黃金交叉: short MA 向上突破 long MA
             if KBar_dic['MA_short'][n-1] <= KBar_dic['MA_long'][n-1] and KBar_dic['MA_short'][n] > KBar_dic['MA_long'][n] :
-                OrderRecord.Order('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],1)
+                OrderRecord.Order('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],Order_Quantity)
                 OrderPrice = KBar_dic['Open'][n+1]
                 StopLossPoint = OrderPrice - MoveStopLoss
                 continue
             # 空單進場:死亡交叉: short MA 向下突破 long MA
             if KBar_dic['MA_short'][n-1] >= KBar_dic['MA_long'][n-1] and KBar_dic['MA_short'][n] < KBar_dic['MA_long'][n] :
-                OrderRecord.Order('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],1)
+                OrderRecord.Order('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],Order_Quantity)
                 OrderPrice = KBar_dic['Open'][n+1]
                 StopLossPoint = OrderPrice + MoveStopLoss
                 continue
         # 多單出場: 如果有多單部位   
-        elif OrderRecord.GetOpenInterest()==1 :
+        elif OrderRecord.GetOpenInterest()>0 :
             ## 結算平倉(期貨才使用, 股票除非是下市櫃)
             if KBar_dic['Product'][n+1] != KBar_dic['Product'][n] :
-                OrderRecord.Cover('Sell', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],1)
+                OrderRecord.Cover('Sell', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],OrderRecord.GetOpenInterest())
                 continue
             # 逐筆移動停損價位
             if KBar_dic['Close'][n] - MoveStopLoss > StopLossPoint :
                 StopLossPoint = KBar_dic['Close'][n] - MoveStopLoss
             # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
             elif KBar_dic['Close'][n] < StopLossPoint :
-                OrderRecord.Cover('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],1)
+                OrderRecord.Cover('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],OrderRecord.GetOpenInterest())
                 continue
         # 空單出場: 如果有空單部位
-        elif OrderRecord.GetOpenInterest()==-1 :
+        elif OrderRecord.GetOpenInterest()<0 :
             ## 結算平倉(期貨才使用, 股票除非是下市櫃)
             if KBar_dic['Product'][n+1] != KBar_dic['Product'][n] :
            
-                OrderRecord.Cover('Buy', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],1)
+                OrderRecord.Cover('Buy', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],-OrderRecord.GetOpenInterest())
                 continue
             # 逐筆更新移動停損價位
             if KBar_dic['Close'][n] + MoveStopLoss < StopLossPoint :
                 StopLossPoint = KBar_dic['Close'][n] + MoveStopLoss
             # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
             elif KBar_dic['Close'][n] > StopLossPoint :
-                OrderRecord.Cover('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],1)
+                OrderRecord.Cover('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],-OrderRecord.GetOpenInterest())
                 continue
 
 
 ###### 計算績效:
-OrderRecord.GetTradeRecord()          ## 交易紀錄清單
-OrderRecord.GetProfit()               ## 利潤清單
+# OrderRecord.GetTradeRecord()          ## 交易紀錄清單
+# OrderRecord.GetProfit()               ## 利潤清單
 
-交易總盈虧 = OrderRecord.GetTotalProfit()          ## 取得交易總盈虧
-平均每次盈虧 = OrderRecord.GetAverageProfit()        ## 取得交易 "平均" 盈虧(每次)
-平均投資報酬率 = OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
-平均獲利_只看獲利的 = OrderRecord.GetAverEarn()             ## 平均獲利(只看獲利的) 
-平均虧損_只看虧損的 = OrderRecord.GetAverLoss()             ## 平均虧損(只看虧損的)
-勝率 = OrderRecord.GetWinRate()              ## 勝率
-最大連續虧損 = OrderRecord.GetAccLoss()              ## 最大連續虧損
-最大盈虧回落_MDD = OrderRecord.GetMDD()                  ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
-報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
+if choice == '台積電: 2022.1.1 至 2024.4.9':
+    交易總盈虧 = OrderRecord.GetTotalProfit()*1000          ## 取得交易總盈虧
+    平均每次盈虧 = OrderRecord.GetAverageProfit()*1000         ## 取得交易 "平均" 盈虧(每次)
+    平均投資報酬率 = OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
+    平均獲利_只看獲利的 = OrderRecord.GetAverEarn()*1000              ## 平均獲利(只看獲利的) 
+    平均虧損_只看虧損的 = OrderRecord.GetAverLoss()*1000              ## 平均虧損(只看虧損的)
+    勝率 = OrderRecord.GetWinRate()              ## 勝率
+    最大連續虧損 = OrderRecord.GetAccLoss()*1000               ## 最大連續虧損
+    最大盈虧回落_MDD = OrderRecord.GetMDD()*1000                   ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
+    報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
 
-OrderRecord.GetCumulativeProfit()         ## 累計盈虧
-OrderRecord.GetCumulativeProfit_rate()    ## 累計投資報酬率
+if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+    交易總盈虧 = OrderRecord.GetTotalProfit()*200          ## 取得交易總盈虧
+    平均每次盈虧 = OrderRecord.GetAverageProfit() *200       ## 取得交易 "平均" 盈虧(每次)
+    平均投資報酬率 = OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
+    平均獲利_只看獲利的 = OrderRecord.GetAverEarn() *200            ## 平均獲利(只看獲利的) 
+    平均虧損_只看虧損的 = OrderRecord.GetAverLoss()*200             ## 平均虧損(只看虧損的)
+    勝率 = OrderRecord.GetWinRate()              ## 勝率
+    最大連續虧損 = OrderRecord.GetAccLoss()*200              ## 最大連續虧損
+    最大盈虧回落_MDD = OrderRecord.GetMDD()*200                  ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
+    報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
 
 
-## 将这些数值存储成一个DataFrame
+
+# OrderRecord.GetCumulativeProfit()         ## 累計盈虧
+# OrderRecord.GetCumulativeProfit_rate()    ## 累計投資報酬率
+
+
+##### 将这些数值存储成一个DataFrame
 data = {
     "項目": ["交易總盈虧", "平均每次盈虧", "平均投資報酬率", "平均獲利(只看獲利的)", "平均虧損(只看虧損的)", "勝率", "最大連續虧損", "最大盈虧回落(MDD)", "報酬風險比(交易總盈虧/最大盈虧回落(MDD))"],
     "數值": [交易總盈虧, 平均每次盈虧, 平均投資報酬率, 平均獲利_只看獲利的, 平均虧損_只看虧損的, 勝率, 最大連續虧損, 最大盈虧回落_MDD, 報酬風險比]
@@ -485,12 +501,106 @@ st.write(df)
 # ax1 = plt.subplot(2,1,1)
 # ax2 = plt.subplot(2,1,2)
 
-## 畫累計盈虧圖:
-OrderRecord.GeneratorProfitChart(StrategyName='MA')
 
 
-## 畫累計投資報酬率圖:
-OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
+
+##### 畫累計盈虧圖:
+# OrderRecord.GeneratorProfitChart(StrategyName='MA')
+matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
+matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
+plt.figure()
+
+#### 計算累計績效
+TotalProfit=[0]
+for i in OrderRecord.Profit:
+    TotalProfit.append(TotalProfit[-1]+i)
+
+#### 繪製圖形
+if choice == '台積電: 2022.1.1 至 2024.4.9':
+    # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+    plt.plot( TotalProfit[1:]*1000  , '-', marker='o', linewidth=1 )
+if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+    # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+    plt.plot( TotalProfit[1:]*200  , '-', marker='o', linewidth=1 )
+
+
+####定義標頭
+# # ax.set_title('Profit')
+# ax.set_title('累計盈虧')
+# ax.set_xlabel('交易編號')
+# ax.set_ylabel('累計盈虧(元/每股)')
+plt.title('累計盈虧(元)')
+plt.xlabel('交易編號')
+plt.ylabel('累計盈虧(元)')
+# if choice == '台積電: 2022.1.1 至 2024.4.9':
+#     plt.ylabel('累計盈虧(元/每股)')
+# if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+#     plt.ylabel('累計盈虧(元/每口)')
+
+#### 设置x轴的刻度
+### 获取TotalProfit的长度
+length = len(TotalProfit)
+### 创建新的x轴刻度列表，每个值都加1
+new_ticks = range(1, length + 1)
+### 应用新的x轴刻度
+plt.xticks(ticks=range(length), labels=new_ticks)
+
+#### 顯示繪製圖表
+# plt.show()    # 顯示繪製圖表
+# plt.savefig(StrategyName+'.png') #儲存繪製圖表
+### 在Streamlit中显示
+st.pyplot(plt)
+
+
+
+
+
+
+##### 畫累計投資報酬率圖:
+# OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
+matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
+matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
+plt.figure()
+
+#### 計算累計績效
+TotalProfit_rate=[0]
+for i in OrderRecord.Profit_rate:
+    TotalProfit.append(TotalProfit_rate[-1]+i)
+
+#### 繪製圖形
+plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+# if choice == '台積電: 2022.1.1 至 2024.4.9':
+#     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+#     plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+# if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+#     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+#     plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+
+
+####定義標頭
+plt.title('累計投資報酬率')
+plt.xlabel('交易編號')
+plt.ylabel('累計投資報酬率')
+# if choice == '台積電: 2022.1.1 至 2024.4.9':
+#     plt.ylabel('累計投資報酬率')
+# if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+#     plt.ylabel('累計投資報酬率')
+
+#### 设置x轴的刻度
+### 获取TotalProfit的长度
+length = len(TotalProfit)
+### 创建新的x轴刻度列表，每个值都加1
+new_ticks = range(1, length + 1)
+### 应用新的x轴刻度
+plt.xticks(ticks=range(length), labels=new_ticks)
+
+#### 顯示繪製圖表
+# plt.show()    # 顯示繪製圖表
+# plt.savefig(StrategyName+'.png') #儲存繪製圖表
+### 在Streamlit中显示
+st.pyplot(plt)
 
 
 
