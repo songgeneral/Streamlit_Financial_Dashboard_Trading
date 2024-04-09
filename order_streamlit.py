@@ -210,7 +210,7 @@ class Record():
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         return TotalProfit_rate
     ## 產出交易績效圖(累計盈虧)
-    def GeneratorProfitChart(self,StrategyName='Strategy'):
+    def GeneratorProfitChart(self, ax, StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
         # matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']
@@ -218,8 +218,8 @@ class Record():
         matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
         matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
         
-        #### 定義圖表
-        ax1 = plt.subplot(2,1,1)
+        # #### 定義圖表
+        # ax1 = plt.subplot(2,1,1)
         
         #### 計算累計績效
         TotalProfit=[0]
@@ -227,13 +227,13 @@ class Record():
             TotalProfit.append(TotalProfit[-1]+i)
         
         #### 繪製圖形
-        ax1.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+        ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
         
         ####定義標頭
-        # ax1.set_title('Profit')
-        ax1.set_title('累計盈虧')
-        ax1.set_xlabel('交易編號')
-        ax1.set_ylabel('累計盈虧(元/每股)')
+        # ax.set_title('Profit')
+        ax.set_title('累計盈虧')
+        ax.set_xlabel('交易編號')
+        ax.set_ylabel('累計盈虧(元/每股)')
         
         #### 设置x轴的刻度
         ### 获取TotalProfit的长度
@@ -250,7 +250,7 @@ class Record():
         st.pyplot(plt)
         
     ## 產出交易績效圖(累計投資報酬率)
-    def GeneratorProfit_rateChart(self,StrategyName='Strategy'):
+    def GeneratorProfit_rateChart(self, ax, StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
         # matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']
@@ -258,8 +258,8 @@ class Record():
         matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
         matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
         
-        #### 定義圖表
-        ax2 = plt.subplot(2,1,2)
+        # #### 定義圖表
+        # ax = plt.subplot(2,1,2)
         
         #### 計算累計投資報酬率
         TotalProfit_rate=[0]
@@ -267,13 +267,13 @@ class Record():
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         
         #### 繪製圖形
-        ax2.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+        ax.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
         
         ####定義標頭
         # ax1.set_title('Profit')
-        ax2.set_title('累計投資報酬率')
-        ax2.set_xlabel('交易編號')
-        ax2.set_ylabel('累計投資報酬率')
+        ax.set_title('累計投資報酬率')
+        ax.set_xlabel('交易編號')
+        ax.set_ylabel('累計投資報酬率')
         
         #### 设置x轴的刻度
         ### 获取TotalProfit_rate的长度
