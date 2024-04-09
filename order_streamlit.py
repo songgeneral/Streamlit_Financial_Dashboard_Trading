@@ -209,7 +209,7 @@ class Record():
         for i in self.Profit_rate:
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         return TotalProfit_rate
-    # 產出交易績效圖(累計盈虧)
+    ## 產出交易績效圖(累計盈虧)
     def GeneratorProfitChart(self,StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
@@ -248,6 +248,52 @@ class Record():
         # plt.savefig(StrategyName+'.png') #儲存繪製圖表
         ### 在Streamlit中显示
         st.pyplot(plt)
+        
+    ## 產出交易績效圖(累計投資報酬率)
+    def GeneratorProfit_rateChart(self,StrategyName='Strategy'):
+        #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
+        # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
+        # matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+        # matplotlib.rcParams['axes.unicode_minus'] = False  # 解決負號顯示問題
+        matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
+        matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+        
+        #### 定義圖表
+        ax1 = plt.subplot(111)
+        
+        #### 計算累計投資報酬率
+        TotalProfit_rate=[0]
+        for i in self.Profit_rate:
+            TotalProfit_rate.append(TotalProfit_rate[-1]+i)
+        
+        #### 繪製圖形
+        ax1.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+        
+        ####定義標頭
+        # ax1.set_title('Profit')
+        ax1.set_title('累計投資報酬率')
+        ax1.set_xlabel('交易編號')
+        ax1.set_ylabel('累計投資報酬率')
+        
+        #### 设置x轴的刻度
+        ### 获取TotalProfit_rate的长度
+        length = len(TotalProfit_rate)
+        ### 创建新的x轴刻度列表，每个值都加1
+        new_ticks = range(1, length + 1)
+        ### 应用新的x轴刻度
+        plt.xticks(ticks=range(length), labels=new_ticks)
+        
+        #### 顯示繪製圖表
+        # plt.show()    # 顯示繪製圖表
+        # plt.savefig(StrategyName+'.png') #儲存繪製圖表
+        ### 在Streamlit中显示
+        st.pyplot(plt)
+        
+        
+        
+        
+        
+        
         
     
 
