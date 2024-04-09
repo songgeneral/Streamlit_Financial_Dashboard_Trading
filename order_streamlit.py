@@ -210,7 +210,7 @@ class Record():
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         return TotalProfit_rate
     ## 產出交易績效圖(累計盈虧)
-    def GeneratorProfitChart(self, ax, StrategyName='Strategy'):
+    def GeneratorProfitChart(self, StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
         # matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']
@@ -227,13 +227,27 @@ class Record():
             TotalProfit.append(TotalProfit[-1]+i)
         
         #### 繪製圖形
-        ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+        # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+        plt.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
         
         ####定義標頭
-        # ax.set_title('Profit')
-        ax.set_title('累計盈虧')
-        ax.set_xlabel('交易編號')
-        ax.set_ylabel('累計盈虧(元/每股)')
+        # # ax.set_title('Profit')
+        # ax.set_title('累計盈虧')
+        # ax.set_xlabel('交易編號')
+        # ax.set_ylabel('累計盈虧(元/每股)')
+        plt.title('累計盈虧')
+        plt.xlabel('交易編號')
+        plt.ylabel('累計盈虧(元/每股)')
+        
+        ####定義標頭
+        # ax1.set_title('Profit')
+        # ax.set_title('累計投資報酬率')
+        plt.title('累計投資報酬率')
+        # ax.set_xlabel('交易編號')
+        plt.xlabel('交易編號')
+        # ax.set_ylabel('累計投資報酬率')
+        plt.ylabel('累計投資報酬率')
+        
         
         #### 设置x轴的刻度
         ### 获取TotalProfit的长度
@@ -250,7 +264,7 @@ class Record():
         st.pyplot(plt)
         
     ## 產出交易績效圖(累計投資報酬率)
-    def GeneratorProfit_rateChart(self, ax, StrategyName='Strategy'):
+    def GeneratorProfit_rateChart(self, StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
         # matplotlib.rcParams['font.sans-serif'] = ['Microsoft YaHei']
@@ -267,13 +281,17 @@ class Record():
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         
         #### 繪製圖形
-        ax.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+        # ax.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+        plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
         
         ####定義標頭
         # ax1.set_title('Profit')
-        ax.set_title('累計投資報酬率')
-        ax.set_xlabel('交易編號')
-        ax.set_ylabel('累計投資報酬率')
+        # ax.set_title('累計投資報酬率')
+        plt.title('累計投資報酬率')
+        # ax.set_xlabel('交易編號')
+        plt.xlabel('交易編號')
+        # ax.set_ylabel('累計投資報酬率')
+        plt.ylabel('累計投資報酬率')
         
         #### 设置x轴的刻度
         ### 获取TotalProfit_rate的长度
