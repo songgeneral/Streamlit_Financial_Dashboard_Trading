@@ -128,24 +128,29 @@ class Record():
     
     
     # 取得交易總盈虧
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetTotalProfit(self):  
         return sum(self.Profit)
     # 取得交易次數
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetTotalNumber(self):  
         return len(self.Profit)
     # 取得平均交易盈虧(每次)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetAverageProfit(self): 
         if len(self.Profit)>0:
             return sum(self.Profit)/len(self.Profit)
         else:
             return 0
     # 取得交易 "平均" 投資報酬率
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetAverageProfitRate(self): 
         if len(self.Profit_rate)>0:
             return sum(self.Profit_rate)/len(self.Profit_rate)
         else:
             return 0
     # 取得勝率
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetWinRate(self):
         WinProfit = [ i for i in self.Profit if i > 0 ]
         if len(self.Profit)>0:
@@ -153,6 +158,7 @@ class Record():
         else:
             return 0
     # 最大連續虧損
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetAccLoss(self):
         AccLoss = 0
         MaxAccLoss = 0
@@ -165,6 +171,7 @@ class Record():
                 AccLoss=0
         return MaxAccLoss
     # 最大累計盈虧回落(MDD)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetMDD(self):
         MDD,Capital,MaxCapital = 0,0,0
         for p in self.Profit:
@@ -174,6 +181,7 @@ class Record():
             MDD = max(MDD,DD)
         return MDD
     # 最大累計投資報酬率回落(MDD_rate)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetMDD_rate(self):
         MDD_rate,Capital_rate,MaxCapital_rate = 0,0,0
         for p in self.Profit_rate:
@@ -182,7 +190,8 @@ class Record():
             DD_rate = MaxCapital_rate - Capital_rate
             MDD_rate = max(MDD_rate,DD_rate)
         return MDD_rate
-    # 平均獲利(只看獲利的) 
+    # 平均獲利(只看獲利的)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetAverEarn(self):
         WinProfit = [ i for i in self.Profit if i > 0 ]
         if len(WinProfit)>0:
@@ -191,6 +200,7 @@ class Record():
             return 0
         
     # 平均虧損(只看虧損的)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetAverLoss(self):
         FailProfit = [ i for i in self.Profit if i < 0 ]
         if len(FailProfit)>0:
@@ -198,18 +208,21 @@ class Record():
         else:
             return 0
     # 累計盈虧
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetCumulativeProfit(self):
         TotalProfit=[0]
         for i in self.Profit:
             TotalProfit.append(TotalProfit[-1]+i)
         return TotalProfit
     # 累計投資報酬率
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GetCumulativeProfit_rate(self):
         TotalProfit_rate=[0]
         for i in self.Profit_rate:
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         return TotalProfit_rate
     ## 產出交易績效圖(累計盈虧)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GeneratorProfitChart(self, choice='stock', StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
@@ -266,6 +279,7 @@ class Record():
         st.pyplot(plt)
         
     ## 產出交易績效圖(累計投資報酬率)
+    @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
     def GeneratorProfit_rateChart(self, StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
         # matplotlib.rcParams['font.family'] = 'Microsoft YaHei'
