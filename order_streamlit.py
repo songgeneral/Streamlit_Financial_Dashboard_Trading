@@ -230,11 +230,14 @@ class Record():
         #### 繪製圖形
         # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
         if choice == 'stock':
-            plt.plot( TotalProfit[1:]*1000 , '-', marker='o', linewidth=1 )
+            TotalProfit_re = [i*1000 for i in TotalProfit]
+            plt.plot( TotalProfit_re[1:] , '-', marker='o', linewidth=1 )
         if choice == 'future1':
-            plt.plot( TotalProfit[1:]*200 , '-', marker='o', linewidth=1 )
+            TotalProfit_re = [i*200 for i in TotalProfit]
+            plt.plot( TotalProfit_re[1:] , '-', marker='o', linewidth=1 )
         if choice == 'future2':
-            plt.plot( TotalProfit[1:]*50 , '-', marker='o', linewidth=1 )
+            TotalProfit_re = [i*50 for i in TotalProfit]
+            plt.plot( TotalProfit_re[1:] , '-', marker='o', linewidth=1 )
             
         
         ####定義標頭
