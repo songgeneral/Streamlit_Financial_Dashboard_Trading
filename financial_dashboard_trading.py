@@ -464,18 +464,18 @@ st.write(df)
 
 
 
-#### 定義圖表
-matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
-matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
-ax1 = plt.subplot(2,1,1)
-ax2 = plt.subplot(2,1,2)
+# #### 定義圖表
+# matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
+# matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+# ax1 = plt.subplot(2,1,1)
+# ax2 = plt.subplot(2,1,2)
 
 ## 畫累計盈虧圖:
-OrderRecord.GeneratorProfitChart(ax1, StrategyName='MA')
+OrderRecord.GeneratorProfitChart(StrategyName='MA')
 
 
 ## 畫累計投資報酬率圖:
-OrderRecord.GeneratorProfit_rateChart(ax2, StrategyName='MA')
+OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
 
 
 
