@@ -40,13 +40,21 @@ def load_data(path):
 # ##### 讀取 excel 檔
 # df_original = pd.read_excel("kbars_2330_2022-01-01-2022-11-18.xlsx")
 
-##### 读取Pickle文件
-df_original = load_data('kbars_2330_2022-01-01-2024-04-09.pkl')
-# df_original = load_data('kbars_2330_2022-01-01-2022-11-18.pkl')  
-# df_original = pd.read_pickle('kbars_2330_2022-01-01-2022-11-18.pkl')
-#df.columns  ## Index(['Unnamed: 0', 'time', 'open', 'low', 'high', 'close', 'volume','amount'], dtype='object')
-# df_original = df_original.drop('Unnamed: 0',axis=1)
 
+###### 選擇金融商品
+st.subheader("選擇金融商品: ")
+choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2024.1 至 2024.4.9']
+choice = st.selectbox('選擇金融商品', choices, index=0)
+##### 读取Pickle文件
+if choice == '台積電: 2022.1.1 至 2024.4.9':
+    df_original = load_data('kbars_2330_2022-01-01-2024-04-09.pkl')
+    # df_original = load_data('kbars_2330_2022-01-01-2024-04-09.pkl')
+    # df_original = load_data('kbars_2330_2022-01-01-2022-11-18.pkl')  
+    # df_original = pd.read_pickle('kbars_2330_2022-01-01-2022-11-18.pkl')
+    #df.columns  ## Index(['Unnamed: 0', 'time', 'open', 'low', 'high', 'close', 'volume','amount'], dtype='object')
+    # df_original = df_original.drop('Unnamed: 0',axis=1)
+if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+    df_original = load_data('kbars_TXF202412_2024-01-01-2024-04-09.pkl')
 
 
 ###### 選擇資料區間
