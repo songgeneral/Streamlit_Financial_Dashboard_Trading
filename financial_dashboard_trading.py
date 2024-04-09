@@ -17,6 +17,7 @@ import pandas as pd
 import streamlit as st 
 import streamlit.components.v1 as stc 
 from order_streamlit import Record
+import matplotlib.pyplot as plt
 
 
 ####### (1) 開始設定 #######
@@ -461,12 +462,17 @@ st.write(df)
 #     st.plotly_chart(fig4, use_container_width=True)
 
 
+
+#### 定義圖表
+ax1 = plt.subplot(2,1,1)
+ax2 = plt.subplot(2,1,2)
+
 ## 畫累計盈虧圖:
-OrderRecord.GeneratorProfitChart(StrategyName='MA')
+OrderRecord.GeneratorProfitChart(ax1, StrategyName='MA')
 
 
 ## 畫累計投資報酬率圖:
-OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
+OrderRecord.GeneratorProfit_rateChart(ax2, StrategyName='MA')
 
 
 
