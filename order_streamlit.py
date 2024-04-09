@@ -259,7 +259,7 @@ class Record():
         matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
         
         #### 定義圖表
-        ax1 = plt.subplot(111)
+        ax2 = plt.subplot(111)
         
         #### 計算累計投資報酬率
         TotalProfit_rate=[0]
@@ -267,13 +267,13 @@ class Record():
             TotalProfit_rate.append(TotalProfit_rate[-1]+i)
         
         #### 繪製圖形
-        ax1.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+        ax2.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
         
         ####定義標頭
         # ax1.set_title('Profit')
-        ax1.set_title('累計投資報酬率')
-        ax1.set_xlabel('交易編號')
-        ax1.set_ylabel('累計投資報酬率')
+        ax2.set_title('累計投資報酬率')
+        ax2.set_xlabel('交易編號')
+        ax2.set_ylabel('累計投資報酬率')
         
         #### 设置x轴的刻度
         ### 获取TotalProfit_rate的长度
