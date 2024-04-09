@@ -421,16 +421,32 @@ for n in range(0,len(KBar_dic['Time'])-1):
 ###### 計算績效:
 OrderRecord.GetTradeRecord()          ## 交易紀錄清單
 OrderRecord.GetProfit()               ## 利潤清單
-OrderRecord.GetTotalProfit()          ## 取得交易總盈虧
-OrderRecord.GetAverageProfit()        ## 取得交易 "平均" 盈虧(每次)
-OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
-OrderRecord.GetAverEarn()             ## 平均獲利(只看獲利的) 
-OrderRecord.GetAverLoss()             ## 平均虧損(只看虧損的)
-OrderRecord.GetWinRate()              ## 勝率
-OrderRecord.GetAccLoss()              ## 最大連續虧損
-OrderRecord.GetMDD()                  ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
+
+交易總盈虧 = OrderRecord.GetTotalProfit()          ## 取得交易總盈虧
+平均每次盈虧 = OrderRecord.GetAverageProfit()        ## 取得交易 "平均" 盈虧(每次)
+平均投資報酬率 = OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
+平均獲利_只看獲利的 = OrderRecord.GetAverEarn()             ## 平均獲利(只看獲利的) 
+平均虧損_只看虧損的 = OrderRecord.GetAverLoss()             ## 平均虧損(只看虧損的)
+勝率 = OrderRecord.GetWinRate()              ## 勝率
+最大連續虧損 = OrderRecord.GetAccLoss()              ## 最大連續虧損
+最大盈虧回落_MDD = OrderRecord.GetMDD()                  ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
+報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
+
 OrderRecord.GetCumulativeProfit()         ## 累計盈虧
 OrderRecord.GetCumulativeProfit_rate()    ## 累計投資報酬率
+
+
+## 将这些数值存储成一个DataFrame
+data = {
+    "項目": ["交易總盈虧", "平均每次盈虧", "平均投資報酬率", "平均獲利(只看獲利的)", "平均虧損(只看虧損的)", "勝率", "最大連續虧損", "最大盈虧回落(MDD)", "報酬風險比"],
+    "數值": [交易總盈虧, 平均每次盈虧, 平均投資報酬率, 平均獲利_只看獲利的, 平均虧損_只看虧損的, 勝率, 最大連續虧損, 最大盈虧回落_MDD, 報酬風險比]
+}
+df = pd.DataFrame(data)
+st.write(df)
+
+
+
+
 
 
 # ## 畫累計盈虧圖:
