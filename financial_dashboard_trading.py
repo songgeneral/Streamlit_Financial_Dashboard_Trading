@@ -505,52 +505,52 @@ st.write(df)
 
 
 ##### 畫累計盈虧圖:
-# OrderRecord.GeneratorProfitChart(StrategyName='MA')
-matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
-matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+OrderRecord.GeneratorProfitChart(StrategyName='MA')
+# matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
+# matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
-plt.figure()
+# plt.figure()
 
-#### 計算累計績效
-TotalProfit=[0]
-for i in OrderRecord.Profit:
-    TotalProfit.append(TotalProfit[-1]+i)
+# #### 計算累計績效
+# TotalProfit=[0]
+# for i in OrderRecord.Profit:
+#     TotalProfit.append(TotalProfit[-1]+i)
 
-#### 繪製圖形
-if choice == '台積電: 2022.1.1 至 2024.4.9':
-    # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
-    plt.plot( TotalProfit[1:]*1000  , '-', marker='o', linewidth=1 )
-if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
-    # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
-    plt.plot( TotalProfit[1:]*200  , '-', marker='o', linewidth=1 )
-
-
-####定義標頭
-# # ax.set_title('Profit')
-# ax.set_title('累計盈虧')
-# ax.set_xlabel('交易編號')
-# ax.set_ylabel('累計盈虧(元/每股)')
-plt.title('累計盈虧(元)')
-plt.xlabel('交易編號')
-plt.ylabel('累計盈虧(元)')
+# #### 繪製圖形
 # if choice == '台積電: 2022.1.1 至 2024.4.9':
-#     plt.ylabel('累計盈虧(元/每股)')
+#     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+#     plt.plot( TotalProfit[1:]*1000  , '-', marker='o', linewidth=1 )
 # if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
-#     plt.ylabel('累計盈虧(元/每口)')
+#     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+#     plt.plot( TotalProfit[1:]*200  , '-', marker='o', linewidth=1 )
 
-#### 设置x轴的刻度
-### 获取TotalProfit的长度
-length = len(TotalProfit)
-### 创建新的x轴刻度列表，每个值都加1
-new_ticks = range(1, length + 1)
-### 应用新的x轴刻度
-plt.xticks(ticks=range(length), labels=new_ticks)
 
-#### 顯示繪製圖表
-# plt.show()    # 顯示繪製圖表
-# plt.savefig(StrategyName+'.png') #儲存繪製圖表
-### 在Streamlit中显示
-st.pyplot(plt)
+# ####定義標頭
+# # # ax.set_title('Profit')
+# # ax.set_title('累計盈虧')
+# # ax.set_xlabel('交易編號')
+# # ax.set_ylabel('累計盈虧(元/每股)')
+# plt.title('累計盈虧(元)')
+# plt.xlabel('交易編號')
+# plt.ylabel('累計盈虧(元)')
+# # if choice == '台積電: 2022.1.1 至 2024.4.9':
+# #     plt.ylabel('累計盈虧(元/每股)')
+# # if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+# #     plt.ylabel('累計盈虧(元/每口)')
+
+# #### 设置x轴的刻度
+# ### 获取TotalProfit的长度
+# length = len(TotalProfit)
+# ### 创建新的x轴刻度列表，每个值都加1
+# new_ticks = range(1, length + 1)
+# ### 应用新的x轴刻度
+# plt.xticks(ticks=range(length), labels=new_ticks)
+
+# #### 顯示繪製圖表
+# # plt.show()    # 顯示繪製圖表
+# # plt.savefig(StrategyName+'.png') #儲存繪製圖表
+# ### 在Streamlit中显示
+# st.pyplot(plt)
 
 
 
@@ -558,49 +558,49 @@ st.pyplot(plt)
 
 
 ##### 畫累計投資報酬率圖:
-# OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
-matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
-matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
+# matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
+# matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
-plt.figure()
+# plt.figure()
 
-#### 計算累計計投資報酬
-TotalProfit_rate=[0]
-for i in OrderRecord.Profit_rate:
-    TotalProfit.append(TotalProfit_rate[-1]+i)
+# #### 計算累計計投資報酬
+# TotalProfit_rate=[0]
+# for i in OrderRecord.Profit_rate:
+#     TotalProfit_rate.append(TotalProfit_rate[-1]+i)
 
-#### 繪製圖形
-plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
-# if choice == '台積電: 2022.1.1 至 2024.4.9':
-#     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
-#     plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
-# if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
-#     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
-#     plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+# #### 繪製圖形
+# plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+# # if choice == '台積電: 2022.1.1 至 2024.4.9':
+# #     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+# #     plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
+# # if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+# #     # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
+# #     plt.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
 
 
-####定義標頭
-plt.title('累計投資報酬率')
-plt.xlabel('交易編號')
-plt.ylabel('累計投資報酬率')
-# if choice == '台積電: 2022.1.1 至 2024.4.9':
-#     plt.ylabel('累計投資報酬率')
-# if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
-#     plt.ylabel('累計投資報酬率')
+# ####定義標頭
+# plt.title('累計投資報酬率')
+# plt.xlabel('交易編號')
+# plt.ylabel('累計投資報酬率')
+# # if choice == '台積電: 2022.1.1 至 2024.4.9':
+# #     plt.ylabel('累計投資報酬率')
+# # if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+# #     plt.ylabel('累計投資報酬率')
 
-#### 设置x轴的刻度
-### 获取TotalProfit的长度
-length = len(TotalProfit)
-### 创建新的x轴刻度列表，每个值都加1
-new_ticks = range(1, length + 1)
-### 应用新的x轴刻度
-plt.xticks(ticks=range(length), labels=new_ticks)
+# #### 设置x轴的刻度
+# ### 获取TotalProfit的长度
+# length = len(TotalProfit_rate)
+# ### 创建新的x轴刻度列表，每个值都加1
+# new_ticks = range(1, length + 1)
+# ### 应用新的x轴刻度
+# plt.xticks(ticks=range(length), labels=new_ticks)
 
-#### 顯示繪製圖表
-# plt.show()    # 顯示繪製圖表
-# plt.savefig(StrategyName+'.png') #儲存繪製圖表
-### 在Streamlit中显示
-st.pyplot(plt)
+# #### 顯示繪製圖表
+# # plt.show()    # 顯示繪製圖表
+# # plt.savefig(StrategyName+'.png') #儲存繪製圖表
+# ### 在Streamlit中显示
+# st.pyplot(plt)
 
 
 
