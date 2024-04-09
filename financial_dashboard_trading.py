@@ -437,6 +437,93 @@ for n in range(0,len(KBar_dic['Time'])-1):
                 continue
 
 
+###### 繪製K線圖加上MA以及下單點位
+@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+def ChartOrder_MA(Kbar_df,TR):
+    # # 將K線轉為DataFrame
+    # Kbar_df=KbarToDf(KBar)
+    # 買(多)方下單點位紀錄
+    BTR = [ i for i in TR if i[0]=='Buy' or i[0]=='B' ]
+    BuyOrderPoint_date = [] 
+    BuyOrderPoint_price = []
+    BuyCoverPoint_date = []
+    BuyCoverPoint_price = []
+    for date,Low,High in (Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
+        # 買方進場
+        if date in [ i[2] for i in BTR ]:
+            BuyOrderPoint_date.append(date)
+            BuyOrderPoint_price.append(Low * 0.999)
+        else:
+            BuyOrderPoint_date.append(np.nan)
+            BuyOrderPoint_price.append(np.nan)
+        # 買方出場
+        if date in [ i[4] for i in BTR ]:
+            BuyCoverPoint_date.append(date)
+            BuyCoverPoint_price.append(High * 1.001)
+        else:
+            BuyCoverPoint_date.append(np.nan)
+            BuyCoverPoint_price.append(np.nan)
+    # # 將下單點位加入副圖物件
+    # if [ i for i in BuyOrderPoint if not np.isnan(i) ] !=[]:
+    #     addp.append(mpf.make_addplot(BuyOrderPoint,scatter=True,markersize=50,marker='^',color='red'))  ## 200
+    #     addp.append(mpf.make_addplot(BuyCoverPoint,scatter=True,markersize=50,marker='v',color='blue')) ## 200
+    # 賣(空)方下單點位紀錄
+    STR = [ i for i in TR if i[0]=='Sell' or i[0]=='S' ]
+    SellOrderPoint_date = []
+    SellOrderPoint_price = []
+    SellCoverPoint_date = []
+    SellCoverPoint_price = []
+    for date,Low,High in (Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
+        # 賣方進場
+        if date in [ i[2] for i in STR]:
+            SellOrderPoint_date.append(date)
+            SellOrderPoint_price.append(High * 1.001)
+        else:
+            SellOrderPoint_date.append(np.nan)
+            SellOrderPoint_price.append(np.nan)
+        # 賣方出場
+        if date in [ i[4] for i in STR ]:
+            SellCoverPoint_date.append(date)
+            SellCoverPoint_price.append(Low * 0.999)
+        else:
+            SellCoverPoint_date.append(np.nan)
+            SellCoverPoint_price.append(np.nan)
+    # # 將下單點位加入副圖物件
+    # if [ i for i in SellOrderPoint if not np.isnan(i) ] !=[]:
+    #     addp.append(mpf.make_addplot(SellOrderPoint,scatter=True,markersize=50,marker='v',color='green'))  ## 200
+    #     addp.append(mpf.make_addplot(SellCoverPoint,scatter=True,markersize=50,marker='^',color='pink'))   ## 200
+    # 開始繪圖
+    # ChartKBar(KBar,addp,volume_enable)
+    fig5 = make_subplots(specs=[[{"secondary_y": True}]])
+    
+    #### include candlestick with rangeselector
+    fig5.add_trace(go.Candlestick(x=KBar_df['Time'],
+                    open=KBar_df['Open'], high=KBar_df['High'],
+                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+                   secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
+    
+    #### include a go.Bar trace for volumes
+    fig5.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['Volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
+    fig5.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MA+1:], y=KBar_df['MA_long'][last_nan_index_MA+1:], mode='lines',line=dict(color='orange', width=2), name=f'{LongMAPeriod}-根 K棒 移動平均線'), 
+                  secondary_y=True)
+    fig5.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MA+1:], y=KBar_df['MA_short'][last_nan_index_MA+1:], mode='lines',line=dict(color='pink', width=2), name=f'{ShortMAPeriod}-根 K棒 移動平均線'), 
+                  secondary_y=True)
+    fig5.add_trace(go.Scatter(x=BuyOrderPoint_date, y=BuyOrderPoint_price, mode='markers',  marker=dict(color='red', symbol='triangle-up', size=10),  name='作多進場點'), secondary_y=True)
+    fig5.add_trace(go.Scatter(x=BuyCoverPoint_date, y=BuyCoverPoint_price, mode='markers',  marker=dict(color='blue', symbol='triangle-down', size=10),  name='作多出場點'), secondary_y=True)
+    fig5.add_trace(go.Scatter(x=SellOrderPoint_date, y=SellOrderPoint_price, mode='markers',  marker=dict(color='green', symbol='triangle-down', size=10),  name='作空進場點'), secondary_y=True)
+    fig5.add_trace(go.Scatter(x=SellCoverPoint_date, y=SellCoverPoint_price, mode='markers',  marker=dict(color='pink', symbol='triangle-up', size=10),  name='作空出場點'), secondary_y=True)
+ 
+    fig5.layout.yaxis2.showgrid=True
+    st.plotly_chart(fig5, use_container_width=True)
+
+
+ChartOrder_MA(KBar_df,OrderRecord.GetTradeRecord())
+
+
+
+
+
+
 ###### 計算績效:
 # OrderRecord.GetTradeRecord()          ## 交易紀錄清單
 # OrderRecord.GetProfit()               ## 利潤清單
@@ -468,7 +555,6 @@ if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
 # OrderRecord.GetCumulativeProfit()         ## 累計盈虧
 # OrderRecord.GetCumulativeProfit_rate()    ## 累計投資報酬率
 
-
 ##### 将这些数值存储成一个DataFrame
 data = {
     "項目": ["交易總盈虧(元)", "平均每次盈虧(元)", "平均投資報酬率", "平均獲利(只看獲利的)(元)", "平均虧損(只看虧損的)(元)", "勝率", "最大連續虧損(元)", "最大盈虧回落(MDD)(元)", "報酬風險比(交易總盈虧/最大盈虧回落(MDD))"],
@@ -476,6 +562,9 @@ data = {
 }
 df = pd.DataFrame(data)
 st.write(df)
+
+
+
 
 
 
