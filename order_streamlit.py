@@ -240,14 +240,6 @@ class Record():
         plt.xlabel('交易編號')
         plt.ylabel('累計盈虧(元/每股)')
         
-        ####定義標頭
-        # ax1.set_title('Profit')
-        # ax.set_title('累計投資報酬率')
-        plt.title('累計投資報酬率')
-        # ax.set_xlabel('交易編號')
-        plt.xlabel('交易編號')
-        # ax.set_ylabel('累計投資報酬率')
-        plt.ylabel('累計投資報酬率')
         
         
         #### 设置x轴的刻度
