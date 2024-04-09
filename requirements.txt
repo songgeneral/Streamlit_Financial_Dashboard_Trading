@@ -7,3 +7,4 @@ streamlit-nested-layout
 matplotlib
 openpyxl
 plotly
+mplfinance
