@@ -448,7 +448,7 @@ def ChartOrder_MA(Kbar_df,TR):
     BuyOrderPoint_price = []
     BuyCoverPoint_date = []
     BuyCoverPoint_price = []
-    for date,Low,High in (Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
+    for date,Low,High in zip(Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
         # 買方進場
         if date in [ i[2] for i in BTR ]:
             BuyOrderPoint_date.append(date)
@@ -473,7 +473,7 @@ def ChartOrder_MA(Kbar_df,TR):
     SellOrderPoint_price = []
     SellCoverPoint_date = []
     SellCoverPoint_price = []
-    for date,Low,High in (Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
+    for date,Low,High in zip(Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
         # 賣方進場
         if date in [ i[2] for i in STR]:
             SellOrderPoint_date.append(date)
