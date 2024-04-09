@@ -497,10 +497,10 @@ def ChartOrder_MA(Kbar_df,TR):
     fig5 = make_subplots(specs=[[{"secondary_y": True}]])
     
     #### include candlestick with rangeselector
-    fig5.add_trace(go.Candlestick(x=KBar_df['Time'],
-                    open=KBar_df['Open'], high=KBar_df['High'],
-                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
-                   secondary_y=False)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
+    # fig5.add_trace(go.Candlestick(x=KBar_df['Time'],
+    #                 open=KBar_df['Open'], high=KBar_df['High'],
+    #                 low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+    #                secondary_y=False)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
     #### include a go.Bar trace for volumes
     # fig5.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['Volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
