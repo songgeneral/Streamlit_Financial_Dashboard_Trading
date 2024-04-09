@@ -220,6 +220,7 @@ class Record():
         
         # #### 定義圖表
         # ax1 = plt.subplot(2,1,1)
+        plt.figure()
         
         #### 計算累計績效
         TotalProfit=[0]
@@ -274,6 +275,7 @@ class Record():
         
         # #### 定義圖表
         # ax = plt.subplot(2,1,2)
+        plt.figure()
         
         #### 計算累計投資報酬率
         TotalProfit_rate=[0]
