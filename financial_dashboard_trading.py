@@ -318,13 +318,13 @@ with st.expander("K線圖, 移動平均線"):
 
 
 ###### K線圖, RSI
-with st.expander("K線圖, 長短 RSI"):
+with st.expander("長短 RSI"):
     fig2 = make_subplots(specs=[[{"secondary_y": True}]])
     #### include candlestick with rangeselector
-    fig2.add_trace(go.Candlestick(x=KBar_df['Time'],
-                    open=KBar_df['Open'], high=KBar_df['High'],
-                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
-                   secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
+    # fig2.add_trace(go.Candlestick(x=KBar_df['Time'],
+    #                 open=KBar_df['Open'], high=KBar_df['High'],
+    #                 low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+    #                secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
     fig2.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_RSI+1:], y=KBar_df['RSI_long'][last_nan_index_RSI+1:], mode='lines',line=dict(color='red', width=2), name=f'{LongRSIPeriod}-根 K棒 移動 RSI'), 
                   secondary_y=False)
@@ -336,12 +336,12 @@ with st.expander("K線圖, 長短 RSI"):
     
 
 ###### K線圖, Bollinger Band    
-with st.expander("K線圖, 布林通道"):
+with st.expander("布林通道"):
     fig3 = make_subplots(specs=[[{"secondary_y": True}]])
-    fig3.add_trace(go.Candlestick(x=KBar_df['Time'],
-                    open=KBar_df['Open'], high=KBar_df['High'],
-                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
-                   secondary_y=True)    
+    # fig3.add_trace(go.Candlestick(x=KBar_df['Time'],
+    #                 open=KBar_df['Open'], high=KBar_df['High'],
+    #                 low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+    #                secondary_y=True)    
     fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['SMA'][last_nan_index_BB+1:], mode='lines',line=dict(color='black', width=2), name='布林通道中軌道'), 
                   secondary_y=False)
     fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Upper_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='red', width=2), name='布林通道上軌道'), 
