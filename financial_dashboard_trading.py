@@ -505,7 +505,11 @@ st.write(df)
 
 
 ##### 畫累計盈虧圖:
-OrderRecord.GeneratorProfitChart(StrategyName='MA')
+if choice == '台積電: 2022.1.1 至 2024.4.9':
+    OrderRecord.GeneratorProfitChart(choice='stock',StrategyName='MA')
+if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+    OrderRecord.GeneratorProfitChart(choice='future1',StrategyName='MA')
+
 # matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
 # matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
