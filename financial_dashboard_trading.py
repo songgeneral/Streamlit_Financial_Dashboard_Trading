@@ -461,8 +461,8 @@ st.write(df)
 #     st.plotly_chart(fig4, use_container_width=True)
 
 
-# ## 畫累計盈虧圖:
-# OrderRecord.GeneratorProfitChart(StrategyName='MA')
+## 畫累計盈虧圖:
+OrderRecord.GeneratorProfitChart(StrategyName='MA')
 
 
 ## 畫累計投資報酬率圖:
