@@ -601,7 +601,8 @@ data = {
     "數值": [交易總盈虧, 平均每次盈虧, 平均投資報酬率, 平均獲利_只看獲利的, 平均虧損_只看虧損的, 勝率, 最大連續虧損, 最大盈虧回落_MDD, 報酬風險比]
 }
 df = pd.DataFrame(data)
-st.write(df)
+if len(df)>0:
+    st.write(df)
 
 
 
