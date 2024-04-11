@@ -44,7 +44,7 @@ def load_data(path):
 ###### 選擇金融商品
 st.subheader("選擇金融商品: ")
 # choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2024.1 至 2024.4.9']
-choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2023.12 至 2024.4.11']
+choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2023.12 至 2024.4.11', '小台指2024.12到期: 2023.12 至 2024.4.11']
 choice = st.selectbox('選擇金融商品', choices, index=0)
 ##### 读取Pickle文件
 if choice == '台積電: 2022.1.1 至 2024.4.9':
@@ -58,6 +58,8 @@ if choice == '台積電: 2022.1.1 至 2024.4.9':
 #     df_original = load_data('kbars_TXF202412_2024-01-01-2024-04-09.pkl')  
 if choice == '大台指2024.12到期: 2023.12 至 2024.4.11':
     df_original = load_data('kbars_TXF202412_2023-12-21-2024-04-11.pkl')
+if choice == '小台指2024.12到期: 2023.12 至 2024.4.11':
+    df_original = load_data('kbars_MXF202412_2023-12-21-2024-04-11.pkl')
 
 
 
@@ -559,7 +561,7 @@ if choice == '台積電: 2022.1.1 至 2024.4.9':
     最大盈虧回落_MDD = OrderRecord.GetMDD()*1000                   ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
     報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
 
-if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+if choice == '大台指2024.12到期: 2023.12 至 2024.4.11':
     交易總盈虧 = OrderRecord.GetTotalProfit()*200          ## 取得交易總盈虧
     平均每次盈虧 = OrderRecord.GetAverageProfit() *200       ## 取得交易 "平均" 盈虧(每次)
     平均投資報酬率 = OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
@@ -568,6 +570,17 @@ if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
     勝率 = OrderRecord.GetWinRate()              ## 勝率
     最大連續虧損 = OrderRecord.GetAccLoss()*200              ## 最大連續虧損
     最大盈虧回落_MDD = OrderRecord.GetMDD()*200                  ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
+    報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
+
+if choice == '小台指2024.12到期: 2023.12 至 2024.4.11':
+    交易總盈虧 = OrderRecord.GetTotalProfit()*50          ## 取得交易總盈虧
+    平均每次盈虧 = OrderRecord.GetAverageProfit() *50       ## 取得交易 "平均" 盈虧(每次)
+    平均投資報酬率 = OrderRecord.GetAverageProfitRate()    ## 取得交易 "平均" 投資報酬率(每次)  
+    平均獲利_只看獲利的 = OrderRecord.GetAverEarn() *50            ## 平均獲利(只看獲利的) 
+    平均虧損_只看虧損的 = OrderRecord.GetAverLoss()*50             ## 平均虧損(只看虧損的)
+    勝率 = OrderRecord.GetWinRate()              ## 勝率
+    最大連續虧損 = OrderRecord.GetAccLoss()*50              ## 最大連續虧損
+    最大盈虧回落_MDD = OrderRecord.GetMDD()*50                  ## 最大利潤(盈虧)回落(MDD). 這個不是一般的 "資金" 或 "投資報酬率" 的回落
     報酬風險比 = 交易總盈虧/最大盈虧回落_MDD
 
 
@@ -618,6 +631,9 @@ if choice == '台積電: 2022.1.1 至 2024.4.9':
     OrderRecord.GeneratorProfitChart(choice='stock',StrategyName='MA')
 if choice == '大台指2024.12到期: 2023.12 至 2024.4.11':
     OrderRecord.GeneratorProfitChart(choice='future1',StrategyName='MA')
+if choice == '小台指2024.12到期: 2023.12 至 2024.4.11':
+    OrderRecord.GeneratorProfitChart(choice='future2',StrategyName='MA')
+    
 
 # matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
 # matplotlib.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
