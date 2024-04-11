@@ -43,7 +43,8 @@ def load_data(path):
 
 ###### 選擇金融商品
 st.subheader("選擇金融商品: ")
-choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2024.1 至 2024.4.9']
+# choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2024.1 至 2024.4.9']
+choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指2024.12到期: 2023.12 至 2024.4.11']
 choice = st.selectbox('選擇金融商品', choices, index=0)
 ##### 读取Pickle文件
 if choice == '台積電: 2022.1.1 至 2024.4.9':
@@ -53,8 +54,11 @@ if choice == '台積電: 2022.1.1 至 2024.4.9':
     # df_original = pd.read_pickle('kbars_2330_2022-01-01-2022-11-18.pkl')
     #df.columns  ## Index(['Unnamed: 0', 'time', 'open', 'low', 'high', 'close', 'volume','amount'], dtype='object')
     # df_original = df_original.drop('Unnamed: 0',axis=1)
-if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
-    df_original = load_data('kbars_TXF202412_2024-01-01-2024-04-09.pkl')
+# if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+#     df_original = load_data('kbars_TXF202412_2024-01-01-2024-04-09.pkl')  
+if choice == '大台指2024.12到期: 2023.12 至 2024.4.11':
+    df_original = load_data('kbars_TXF202412_2023-12-21-2024-04-11.pkl')
+
 
 
 ###### 選擇資料區間
