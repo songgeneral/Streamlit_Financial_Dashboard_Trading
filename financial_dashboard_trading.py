@@ -616,7 +616,7 @@ st.write(df)
 ##### 畫累計盈虧圖:
 if choice == '台積電: 2022.1.1 至 2024.4.9':
     OrderRecord.GeneratorProfitChart(choice='stock',StrategyName='MA')
-if choice == '大台指2024.12到期: 2024.1 至 2024.4.9':
+if choice == '大台指2024.12到期: 2023.12 至 2024.4.11':
     OrderRecord.GeneratorProfitChart(choice='future1',StrategyName='MA')
 
 # matplotlib.rcParams['font.family'] = 'Noto Sans CJK JP'
