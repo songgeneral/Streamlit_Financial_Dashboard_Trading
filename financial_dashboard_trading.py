@@ -412,63 +412,66 @@ with st.expander("MACD(異同移動平均線)"):
 
 ####### (7) 程式交易 #######
 st.subheader("程式交易:")
-with st.expander("策略: (1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損."):
-    MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損價格為目前每股價格減30元; 大小台指進場做多時, 取30代表停損指數為目前台股指數減30點)', 0, 100, 30)
-    Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1)
-    
-    ###### 建立部位管理物件
-    OrderRecord=Record() 
-    
-    ###### 變為字典
-    # KBar_dic = KBar_df_original.to_dict('list')
-    KBar_dic = KBar_df.to_dict('list')
-    
-    ###### 開始回測
-    
-    for n in range(0,len(KBar_dic['Time'])-1):
-        # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
-        if not np.isnan( KBar_dic['MA_long'][n-1] ) :
-            ## 進場: 如果無未平倉部位 
-            if OrderRecord.GetOpenInterest()==0 :
-                # 多單進場: 黃金交叉: short MA 向上突破 long MA
-                if KBar_dic['MA_short'][n-1] <= KBar_dic['MA_long'][n-1] and KBar_dic['MA_short'][n] > KBar_dic['MA_long'][n] :
-                    OrderRecord.Order('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],Order_Quantity)
-                    OrderPrice = KBar_dic['Open'][n+1]
-                    StopLossPoint = OrderPrice - MoveStopLoss
-                    continue
-                # 空單進場:死亡交叉: short MA 向下突破 long MA
-                if KBar_dic['MA_short'][n-1] >= KBar_dic['MA_long'][n-1] and KBar_dic['MA_short'][n] < KBar_dic['MA_long'][n] :
-                    OrderRecord.Order('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],Order_Quantity)
-                    OrderPrice = KBar_dic['Open'][n+1]
-                    StopLossPoint = OrderPrice + MoveStopLoss
-                    continue
-            # 多單出場: 如果有多單部位   
-            elif OrderRecord.GetOpenInterest()>0 :
-                ## 結算平倉(期貨才使用, 股票除非是下市櫃)
-                if KBar_dic['Product'][n+1] != KBar_dic['Product'][n] :
-                    OrderRecord.Cover('Sell', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],OrderRecord.GetOpenInterest())
-                    continue
-                # 逐筆移動停損價位
-                if KBar_dic['Close'][n] - MoveStopLoss > StopLossPoint :
-                    StopLossPoint = KBar_dic['Close'][n] - MoveStopLoss
-                # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
-                elif KBar_dic['Close'][n] < StopLossPoint :
-                    OrderRecord.Cover('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],OrderRecord.GetOpenInterest())
-                    continue
-            # 空單出場: 如果有空單部位
-            elif OrderRecord.GetOpenInterest()<0 :
-                ## 結算平倉(期貨才使用, 股票除非是下市櫃)
-                if KBar_dic['Product'][n+1] != KBar_dic['Product'][n] :
-               
-                    OrderRecord.Cover('Buy', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],-OrderRecord.GetOpenInterest())
-                    continue
-                # 逐筆更新移動停損價位
-                if KBar_dic['Close'][n] + MoveStopLoss < StopLossPoint :
-                    StopLossPoint = KBar_dic['Close'][n] + MoveStopLoss
-                # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
-                elif KBar_dic['Close'][n] > StopLossPoint :
-                    OrderRecord.Cover('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],-OrderRecord.GetOpenInterest())
-                    continue
+choices_strategy = ['(1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損.']
+choice_strategy = st.selectbox('選擇交易策略', choices_strategy, index=0)
+if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損.':
+    with st.expander("策略: (1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損."):
+        MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損價格為目前每股價格減30元; 大小台指進場做多時, 取30代表停損指數為目前台股指數減30點)', 0, 100, 30)
+        Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1)
+        
+        ###### 建立部位管理物件
+        OrderRecord=Record() 
+        
+        ###### 變為字典
+        # KBar_dic = KBar_df_original.to_dict('list')
+        KBar_dic = KBar_df.to_dict('list')
+        
+        ###### 開始回測
+        
+        for n in range(0,len(KBar_dic['Time'])-1):
+            # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
+            if not np.isnan( KBar_dic['MA_long'][n-1] ) :
+                ## 進場: 如果無未平倉部位 
+                if OrderRecord.GetOpenInterest()==0 :
+                    # 多單進場: 黃金交叉: short MA 向上突破 long MA
+                    if KBar_dic['MA_short'][n-1] <= KBar_dic['MA_long'][n-1] and KBar_dic['MA_short'][n] > KBar_dic['MA_long'][n] :
+                        OrderRecord.Order('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],Order_Quantity)
+                        OrderPrice = KBar_dic['Open'][n+1]
+                        StopLossPoint = OrderPrice - MoveStopLoss
+                        continue
+                    # 空單進場:死亡交叉: short MA 向下突破 long MA
+                    if KBar_dic['MA_short'][n-1] >= KBar_dic['MA_long'][n-1] and KBar_dic['MA_short'][n] < KBar_dic['MA_long'][n] :
+                        OrderRecord.Order('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],Order_Quantity)
+                        OrderPrice = KBar_dic['Open'][n+1]
+                        StopLossPoint = OrderPrice + MoveStopLoss
+                        continue
+                # 多單出場: 如果有多單部位   
+                elif OrderRecord.GetOpenInterest()>0 :
+                    ## 結算平倉(期貨才使用, 股票除非是下市櫃)
+                    if KBar_dic['Product'][n+1] != KBar_dic['Product'][n] :
+                        OrderRecord.Cover('Sell', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],OrderRecord.GetOpenInterest())
+                        continue
+                    # 逐筆移動停損價位
+                    if KBar_dic['Close'][n] - MoveStopLoss > StopLossPoint :
+                        StopLossPoint = KBar_dic['Close'][n] - MoveStopLoss
+                    # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
+                    elif KBar_dic['Close'][n] < StopLossPoint :
+                        OrderRecord.Cover('Sell', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],OrderRecord.GetOpenInterest())
+                        continue
+                # 空單出場: 如果有空單部位
+                elif OrderRecord.GetOpenInterest()<0 :
+                    ## 結算平倉(期貨才使用, 股票除非是下市櫃)
+                    if KBar_dic['Product'][n+1] != KBar_dic['Product'][n] :
+                   
+                        OrderRecord.Cover('Buy', KBar_dic['Product'][n],KBar_dic['Time'][n],KBar_dic['Close'][n],-OrderRecord.GetOpenInterest())
+                        continue
+                    # 逐筆更新移動停損價位
+                    if KBar_dic['Close'][n] + MoveStopLoss < StopLossPoint :
+                        StopLossPoint = KBar_dic['Close'][n] + MoveStopLoss
+                    # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
+                    elif KBar_dic['Close'][n] > StopLossPoint :
+                        OrderRecord.Cover('Buy', KBar_dic['Product'][n+1],KBar_dic['Time'][n+1],KBar_dic['Open'][n+1],-OrderRecord.GetOpenInterest())
+                        continue
 
 
 ###### 繪製K線圖加上MA以及下單點位
