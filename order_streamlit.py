@@ -128,11 +128,17 @@ class Record():
     
     
     # 取得交易總盈虧
-    def GetTotalProfit(self):  
-        return sum(self.Profit)
+    def GetTotalProfit(self):
+        if len(self.Profit)>0:
+            return sum(self.Profit)
+        else:
+            return 0
     # 取得交易次數
-    def GetTotalNumber(self):  
-        return len(self.Profit)
+    def GetTotalNumber(self): 
+        if len(self.Profit)>0:
+            return len(self.Profit)
+        else: 
+            return 0
     # 取得平均交易盈虧(每次)
     def GetAverageProfit(self): 
         if len(self.Profit)>0:
