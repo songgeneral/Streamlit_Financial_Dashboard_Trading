@@ -160,61 +160,82 @@ class Record():
             return 0
     # 最大連續虧損
     def GetAccLoss(self):
-        AccLoss = 0
-        MaxAccLoss = 0
-        for p in self.Profit:
-            if p <= 0:
-                AccLoss+=p
-                if AccLoss < MaxAccLoss:
-                    MaxAccLoss=AccLoss
-            else:
-                AccLoss=0
-        return MaxAccLoss
+        if len(self.Profit)>0:
+            AccLoss = 0
+            MaxAccLoss = 0
+            for p in self.Profit:
+                if p <= 0:
+                    AccLoss+=p
+                    if AccLoss < MaxAccLoss:
+                        MaxAccLoss=AccLoss
+                else:
+                    AccLoss=0
+            return MaxAccLoss
+        else:
+            return 0
     # 最大累計盈虧回落(MDD)
     def GetMDD(self):
-        MDD,Capital,MaxCapital = 0,0,0
-        for p in self.Profit:
-            Capital += p  ## Capital = Capital+p
-            MaxCapital = max(MaxCapital,Capital)
-            DD = MaxCapital - Capital
-            MDD = max(MDD,DD)
-        return MDD
+        if len(self.Profit)>0:
+            MDD,Capital,MaxCapital = 0,0,0
+            for p in self.Profit:
+                Capital += p  ## Capital = Capital+p
+                MaxCapital = max(MaxCapital,Capital)
+                DD = MaxCapital - Capital
+                MDD = max(MDD,DD)
+            return MDD
+        else:
+            return 0
     # 最大累計投資報酬率回落(MDD_rate)
     def GetMDD_rate(self):
-        MDD_rate,Capital_rate,MaxCapital_rate = 0,0,0
-        for p in self.Profit_rate:
-            Capital_rate += p
-            MaxCapital_rate = max(MaxCapital_rate,Capital_rate)
-            DD_rate = MaxCapital_rate - Capital_rate
-            MDD_rate = max(MDD_rate,DD_rate)
-        return MDD_rate
+        if len(self.Profit_rate)>0:
+            MDD_rate,Capital_rate,MaxCapital_rate = 0,0,0
+            for p in self.Profit_rate:
+                Capital_rate += p
+                MaxCapital_rate = max(MaxCapital_rate,Capital_rate)
+                DD_rate = MaxCapital_rate - Capital_rate
+                MDD_rate = max(MDD_rate,DD_rate)
+            return MDD_rate
+        else:
+            return 0
     # 平均獲利(只看獲利的) 
     def GetAverEarn(self):
-        WinProfit = [ i for i in self.Profit if i > 0 ]
-        if len(WinProfit)>0:
-            return sum(WinProfit)/len(WinProfit)
+        if len(self.Profit)>0:
+            WinProfit = [ i for i in self.Profit if i > 0 ]
+            if len(WinProfit)>0:
+                return sum(WinProfit)/len(WinProfit)
+            else:
+                return 0
         else:
             return 0
         
     # 平均虧損(只看虧損的)
     def GetAverLoss(self):
-        FailProfit = [ i for i in self.Profit if i < 0 ]
-        if len(FailProfit)>0:
-            return sum(FailProfit)/len(FailProfit)
+        if len(self.Profit)>0:
+            FailProfit = [ i for i in self.Profit if i < 0 ]
+            if len(FailProfit)>0:
+                return sum(FailProfit)/len(FailProfit)
+            else:
+                return 0
         else:
             return 0
     # 累計盈虧
     def GetCumulativeProfit(self):
-        TotalProfit=[0]
-        for i in self.Profit:
-            TotalProfit.append(TotalProfit[-1]+i)
-        return TotalProfit
+        if len(self.Profit)>0:
+            TotalProfit=[0]
+            for i in self.Profit:
+                TotalProfit.append(TotalProfit[-1]+i)
+            return TotalProfit
+        else:
+            return 0
     # 累計投資報酬率
     def GetCumulativeProfit_rate(self):
-        TotalProfit_rate=[0]
-        for i in self.Profit_rate:
-            TotalProfit_rate.append(TotalProfit_rate[-1]+i)
-        return TotalProfit_rate
+        if len(self.Profit_rate)>0:
+            TotalProfit_rate=[0]
+            for i in self.Profit_rate:
+                TotalProfit_rate.append(TotalProfit_rate[-1]+i)
+            return TotalProfit_rate
+        else:
+            return 0
     ## 產出交易績效圖(累計盈虧)
     def GeneratorProfitChart(self, choice='stock', StrategyName='Strategy'):
         #### 設置 matplotlib 支持中文的字體: 這裡使用的是 'SimHei' 字體，您也可以替換為任何支持中文的字體
@@ -230,8 +251,9 @@ class Record():
         
         #### 計算累計績效
         TotalProfit=[0]
-        for i in self.Profit:
-            TotalProfit.append(TotalProfit[-1]+i)
+        if len(self.Profit)>0:
+            for i in self.Profit:
+                TotalProfit.append(TotalProfit[-1]+i)
         
         #### 繪製圖形
         # ax.plot( TotalProfit[1:]  , '-', marker='o', linewidth=1 )
@@ -286,8 +308,10 @@ class Record():
         
         #### 計算累計投資報酬率
         TotalProfit_rate=[0]
-        for i in self.Profit_rate:
-            TotalProfit_rate.append(TotalProfit_rate[-1]+i)
+        if len(self.Profit_rate)>0:
+            for i in self.Profit_rate:
+                TotalProfit_rate.append(TotalProfit_rate[-1]+i)
+                
         
         #### 繪製圖形
         # ax.plot( TotalProfit_rate[1:]  , '-', marker='o', linewidth=1 )
