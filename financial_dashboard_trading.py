@@ -162,18 +162,18 @@ with st.expander("設定K棒相關參數:"):
     choices_unit = ['以分鐘為單位','以日為單位','以週為單位','以月為單位']
     choice_unit = st.selectbox('選擇計算K棒時間長度之單位', choices_unit, index=0)
     if choice_unit == '以分鐘為單位':
-        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', key="KBar_duration_分")
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', value=1, key="KBar_duration_分")
         cycle_duration = float(cycle_duration)
     if choice_unit == '以日為單位':
-        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:日)', key="KBar_duration_日")
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:日)', value=1, key="KBar_duration_日")
         cycle_duration = float(cycle_duration)
         cycle_duration = cycle_duration*1440
     if choice_unit == '以週為單位':
-        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:週)', key="KBar_duration_週")
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:週)', value=1, key="KBar_duration_週")
         cycle_duration = float(cycle_duration)
         cycle_duration = cycle_duration*7*1440
     if choice_unit == '以月為單位':
-        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:月, 一月=30天)', key="KBar_duration_月")
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:月, 一月=30天)', value=1, key="KBar_duration_月")
         cycle_duration = float(cycle_duration)
         cycle_duration = cycle_duration*30*1440
 
