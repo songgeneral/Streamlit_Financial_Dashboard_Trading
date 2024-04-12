@@ -154,25 +154,28 @@ def Change_Cycle(Date,cycle_duration,KBar_dic):
 ###### 改變日期資料型態
 Date = start_date.strftime("%Y-%m-%d")
 
-###### 設定 K 棒的時間長度(分鐘)
+
 st.subheader("設定參數:")
-choices_unit = ['以分鐘為單位','以日為單位','以週為單位','以月為單位']
-choice_unit = st.selectbox('選擇計算K棒時間長度之單位', choices_unit, index=0)
-if choice_unit == '以分鐘為單位':
-    cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', key="KBar_duration_分")
-    cycle_duration = float(cycle_duration)
-if choice_unit == '以日為單位':
-    cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:日)', key="KBar_duration_日")
-    cycle_duration = float(cycle_duration)
-    cycle_duration = cycle_duration*1440
-if choice_unit == '以週為單位':
-    cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:週)', key="KBar_duration_週")
-    cycle_duration = float(cycle_duration)
-    cycle_duration = cycle_duration*7*1440
-if choice_unit == '以月為單位':
-    cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:月, 一月=30天)', key="KBar_duration_月")
-    cycle_duration = float(cycle_duration)
-    cycle_duration = cycle_duration*30*1440
+
+###### 設定 K 棒的時間長度(分鐘)
+with st.expander("設定K棒相關參數:"):
+    choices_unit = ['以分鐘為單位','以日為單位','以週為單位','以月為單位']
+    choice_unit = st.selectbox('選擇計算K棒時間長度之單位', choices_unit, index=0)
+    if choice_unit == '以分鐘為單位':
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:分鐘, 一日=1440分鐘)', key="KBar_duration_分")
+        cycle_duration = float(cycle_duration)
+    if choice_unit == '以日為單位':
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:日)', key="KBar_duration_日")
+        cycle_duration = float(cycle_duration)
+        cycle_duration = cycle_duration*1440
+    if choice_unit == '以週為單位':
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:週)', key="KBar_duration_週")
+        cycle_duration = float(cycle_duration)
+        cycle_duration = cycle_duration*7*1440
+    if choice_unit == '以月為單位':
+        cycle_duration = st.number_input('輸入一根 K 棒的時間長度(單位:月, 一月=30天)', key="KBar_duration_月")
+        cycle_duration = float(cycle_duration)
+        cycle_duration = cycle_duration*30*1440
 
 
 ###### 進行 K 棒更新  & 形成 KBar 字典 (新週期的)
@@ -192,10 +195,11 @@ def Calculate_MA(df, period=10):
     return ma
   
 #####  設定長短移動平均線的 K棒 長度:
-# st.subheader("設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)")
-LongMAPeriod=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10)
-# st.subheader("設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)")
-ShortMAPeriod=st.slider('設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)', 0, 100, 2)
+with st.expander("設定長短移動平均線的 K棒 長度:"):
+    # st.subheader("設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)")
+    LongMAPeriod=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10)
+    # st.subheader("設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)")
+    ShortMAPeriod=st.slider('設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)', 0, 100, 2)
 
 ##### 計算長短移動平均線
 KBar_df['MA_long'] = Calculate_MA(KBar_df, period=LongMAPeriod)
@@ -220,10 +224,11 @@ def Calculate_RSI(df, period=14):
   
 ##### 順勢策略
 #### 設定長短 RSI 的 K棒 長度:
-# st.subheader("設定計算長RSI的 K棒週期數目(整數, 例如 10)")
-LongRSIPeriod=st.slider('設定計算長RSI的 K棒週期數目(整數, 例如 10)', 0, 1000, 10)
-# st.subheader("設定計算短RSI的 K棒週期數目(整數, 例如 2)")
-ShortRSIPeriod=st.slider('設定計算短RSI的 K棒週期數目(整數, 例如 2)', 0, 1000, 2)
+with st.expander("設定長短 RSI 的 K棒 長度:"):
+    # st.subheader("設定計算長RSI的 K棒週期數目(整數, 例如 10)")
+    LongRSIPeriod=st.slider('設定計算長RSI的 K棒週期數目(整數, 例如 10)', 0, 1000, 10)
+    # st.subheader("設定計算短RSI的 K棒週期數目(整數, 例如 2)")
+    ShortRSIPeriod=st.slider('設定計算短RSI的 K棒週期數目(整數, 例如 2)', 0, 1000, 2)
 
 #### 計算 RSI指標長短線, 以及定義中線
 KBar_df['RSI_long'] = Calculate_RSI(KBar_df, LongRSIPeriod)
@@ -261,11 +266,12 @@ def Calculate_Bollinger_Bands(df, period=20, num_std_dev=2):
     return df
 
 
-#####  設定長短移動平均線的 K棒 長度:
-# st.subheader("設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)")
-period = st.slider('設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)', 0, 100, 20, key='BB_period')
-# st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)")
-num_std_dev = st.slider('設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)', 0, 100, 2, key='BB_heigh')
+#####  設定布林通道(Bollinger Band)相關參數:
+with st.expander("設定布林通道(Bollinger Band)相關參數:"):
+    # st.subheader("設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)")
+    period = st.slider('設定計算布林通道(Bollinger Band)上中下三通道之K棒週期數目(整數, 例如 20)', 0, 100, 20, key='BB_period')
+    # st.subheader("設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)")
+    num_std_dev = st.slider('設定計算布林通道(Bollinger Band)上中(或下中)通道之帶寬(例如 2 代表上中通道寬度為2倍的標準差)', 0, 100, 2, key='BB_heigh')
 
 ##### 計算布林通道上中下通道:
 KBar_df = Calculate_Bollinger_Bands(KBar_df, period, num_std_dev)
@@ -286,12 +292,13 @@ def Calculate_MACD(df, fast_period=12, slow_period=26, signal_period=9):
     return df
 
 #####  設定MACD三種週期的K棒長度:
-# st.subheader("設定計算 MACD的快速線週期(例如 12根日K)")
-fast_period = st.slider('設定計算 MACD快速線的K棒週期數目(例如 12根日K)', 0, 100, 12)
-# st.subheader("設定計算 MACD的慢速線週期(例如 26根日K)")
-slow_period = st.slider('設定計算 MACD慢速線的K棒週期數目(例如 26根日K)', 0, 100, 26)
-# st.subheader("設定計算 MACD的訊號線週期(例如 9根日K)")
-signal_period = st.slider('設定計算 MACD訊號線的K棒週期數目(例如 9根日K)', 0, 100, 9)
+with st.expander("設定MACD三種週期的K棒長度:"):
+    # st.subheader("設定計算 MACD的快速線週期(例如 12根日K)")
+    fast_period = st.slider('設定計算 MACD快速線的K棒週期數目(例如 12根日K)', 0, 100, 12)
+    # st.subheader("設定計算 MACD的慢速線週期(例如 26根日K)")
+    slow_period = st.slider('設定計算 MACD慢速線的K棒週期數目(例如 26根日K)', 0, 100, 26)
+    # st.subheader("設定計算 MACD的訊號線週期(例如 9根日K)")
+    signal_period = st.slider('設定計算 MACD訊號線的K棒週期數目(例如 9根日K)', 0, 100, 9)
 
 ##### 計算MACD:
 KBar_df = Calculate_MACD(KBar_df, fast_period, slow_period, signal_period)
