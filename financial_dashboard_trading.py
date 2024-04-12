@@ -287,11 +287,11 @@ def Calculate_MACD(df, fast_period=12, slow_period=26, signal_period=9):
 
 #####  設定MACD三種週期的K棒長度:
 # st.subheader("設定計算 MACD的快速線週期(例如 12根日K)")
-fast_period = st.slider('設定計算 MACD的快速線週期(例如 12根日K)', 0, 100, 12)
+fast_period = st.slider('設定計算 MACD快速線的K棒週期數目(例如 12根日K)', 0, 100, 12)
 # st.subheader("設定計算 MACD的慢速線週期(例如 26根日K)")
-slow_period = st.slider('設定計算 MACD的慢速線週期(例如 26根日K)', 0, 100, 26)
+slow_period = st.slider('設定計算 MACD慢速線的K棒週期數目(例如 26根日K)', 0, 100, 26)
 # st.subheader("設定計算 MACD的訊號線週期(例如 9根日K)")
-signal_period = st.slider('設定計算 MACD的訊號線週期(例如 9根日K)', 0, 100, 9)
+signal_period = st.slider('設定計算 MACD訊號線的K棒週期數目(例如 9根日K)', 0, 100, 9)
 
 ##### 計算MACD:
 KBar_df = Calculate_MACD(KBar_df, fast_period, slow_period, signal_period)
