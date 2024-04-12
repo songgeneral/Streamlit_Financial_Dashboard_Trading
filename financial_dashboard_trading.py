@@ -155,7 +155,7 @@ def Change_Cycle(Date,cycle_duration,KBar_dic):
 Date = start_date.strftime("%Y-%m-%d")
 
 
-st.subheader("設定參數:")
+st.subheader("設定技術指標參數:")
 
 ###### 設定 K 棒的時間長度(分鐘)
 with st.expander("設定K棒相關參數:"):
