@@ -321,7 +321,7 @@ KBar_df.columns = [ i[0].upper()+i[1:] for i in KBar_df.columns ]
 
 
 ####### (6) 畫圖 #######
-st.subheader("畫圖")
+st.subheader("技術指標視覺化圖形")
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
