@@ -449,7 +449,7 @@ if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉
         
         ###### 開始回測
         
-        for n in range(0,len(KBar_df['time'])-1):
+        for n in range(1,len(KBar_df['time'])-1):
             # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
             if not np.isnan( KBar_df['MA_long'][n-1] ) :
                 ## 進場: 如果無未平倉部位 
