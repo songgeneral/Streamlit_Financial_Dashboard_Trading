@@ -325,9 +325,9 @@ else:
 
 
 
-####### (5) 將 Dataframe 欄位名稱轉換(第一個字母大寫)  ####### 
-KBar_df_original = KBar_df
-KBar_df.columns = [ i[0].upper()+i[1:] for i in KBar_df.columns ]
+# ####### (5) 將 Dataframe 欄位名稱轉換(第一個字母大寫)  ####### 
+# KBar_df_original = KBar_df
+# KBar_df.columns = [ i[0].upper()+i[1:] for i in KBar_df.columns ]
 
 
 ####### (6) 畫圖 #######
@@ -344,16 +344,16 @@ with st.expander("K線圖, 移動平均線"):
     fig1 = make_subplots(specs=[[{"secondary_y": True}]])
     
     #### include candlestick with rangeselector
-    fig1.add_trace(go.Candlestick(x=KBar_df['Time'],
-                    open=KBar_df['Open'], high=KBar_df['High'],
-                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+    fig1.add_trace(go.Candlestick(x=KBar_df['time'],
+                    open=KBar_df['open'], high=KBar_df['high'],
+                    low=KBar_df['low'], close=KBar_df['close'], name='K線'),
                    secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
     #### include a go.Bar trace for volumes
-    fig1.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['Volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
-    fig1.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MA+1:], y=KBar_df['MA_long'][last_nan_index_MA+1:], mode='lines',line=dict(color='orange', width=2), name=f'{LongMAPeriod}-根 K棒 移動平均線'), 
+    fig1.add_trace(go.Bar(x=KBar_df['time'], y=KBar_df['volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
+    fig1.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MA+1:], y=KBar_df['MA_long'][last_nan_index_MA+1:], mode='lines',line=dict(color='orange', width=2), name=f'{LongMAPeriod}-根 K棒 移動平均線'), 
                   secondary_y=True)
-    fig1.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MA+1:], y=KBar_df['MA_short'][last_nan_index_MA+1:], mode='lines',line=dict(color='pink', width=2), name=f'{ShortMAPeriod}-根 K棒 移動平均線'), 
+    fig1.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MA+1:], y=KBar_df['MA_short'][last_nan_index_MA+1:], mode='lines',line=dict(color='pink', width=2), name=f'{ShortMAPeriod}-根 K棒 移動平均線'), 
                   secondary_y=True)
     
     fig1.layout.yaxis2.showgrid=True
@@ -369,9 +369,9 @@ with st.expander("長短 RSI"):
     #                 low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
     #                secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
-    fig2.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_RSI+1:], y=KBar_df['RSI_long'][last_nan_index_RSI+1:], mode='lines',line=dict(color='red', width=2), name=f'{LongRSIPeriod}-根 K棒 移動 RSI'), 
+    fig2.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_RSI+1:], y=KBar_df['RSI_long'][last_nan_index_RSI+1:], mode='lines',line=dict(color='red', width=2), name=f'{LongRSIPeriod}-根 K棒 移動 RSI'), 
                   secondary_y=False)
-    fig2.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_RSI+1:], y=KBar_df['RSI_short'][last_nan_index_RSI+1:], mode='lines',line=dict(color='blue', width=2), name=f'{ShortRSIPeriod}-根 K棒 移動 RSI'), 
+    fig2.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_RSI+1:], y=KBar_df['RSI_short'][last_nan_index_RSI+1:], mode='lines',line=dict(color='blue', width=2), name=f'{ShortRSIPeriod}-根 K棒 移動 RSI'), 
                   secondary_y=False)
     
     fig2.layout.yaxis2.showgrid=True
@@ -381,15 +381,15 @@ with st.expander("長短 RSI"):
 ###### K線圖, Bollinger Band    
 with st.expander("K線圖,布林通道"):
     fig3 = make_subplots(specs=[[{"secondary_y": True}]])
-    fig3.add_trace(go.Candlestick(x=KBar_df['Time'],
-                    open=KBar_df['Open'], high=KBar_df['High'],
-                    low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
+    fig3.add_trace(go.Candlestick(x=KBar_df['time'],
+                    open=KBar_df['open'], high=KBar_df['high'],
+                    low=KBar_df['low'], close=KBar_df['close'], name='K線'),
                     secondary_y=True)    
-    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['SMA'][last_nan_index_BB+1:], mode='lines',line=dict(color='black', width=2), name='布林通道中軌道'), 
+    fig3.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_BB+1:], y=KBar_df['SMA'][last_nan_index_BB+1:], mode='lines',line=dict(color='black', width=2), name='布林通道中軌道'), 
                   secondary_y=False)
-    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Upper_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='red', width=2), name='布林通道上軌道'), 
+    fig3.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_BB+1:], y=KBar_df['Upper_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='red', width=2), name='布林通道上軌道'), 
                   secondary_y=False)
-    fig3.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_BB+1:], y=KBar_df['Lower_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='blue', width=2), name='布林通道下軌道'), 
+    fig3.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_BB+1:], y=KBar_df['Lower_Band'][last_nan_index_BB+1:], mode='lines',line=dict(color='blue', width=2), name='布林通道下軌道'), 
                   secondary_y=False)
     
     fig3.layout.yaxis2.showgrid=True
@@ -409,10 +409,10 @@ with st.expander("MACD(異同移動平均線)"):
     #                secondary_y=True)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
     #### include a go.Bar trace for volumes
-    fig4.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['MACD_Histogram'], name='MACD Histogram', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
-    fig4.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MACD+1:], y=KBar_df['Signal_Line'][last_nan_index_MACD+1:], mode='lines',line=dict(color='orange', width=2), name='訊號線(DEA)'), 
+    fig4.add_trace(go.Bar(x=KBar_df['time'], y=KBar_df['MACD_Histogram'], name='MACD Histogram', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
+    fig4.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MACD+1:], y=KBar_df['Signal_Line'][last_nan_index_MACD+1:], mode='lines',line=dict(color='orange', width=2), name='訊號線(DEA)'), 
                   secondary_y=True)
-    fig4.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MACD+1:], y=KBar_df['MACD'][last_nan_index_MACD+1:], mode='lines',line=dict(color='pink', width=2), name='DIF'), 
+    fig4.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MACD+1:], y=KBar_df['MACD'][last_nan_index_MACD+1:], mode='lines',line=dict(color='pink', width=2), name='DIF'), 
                   secondary_y=True)
     
     fig4.layout.yaxis2.showgrid=True
@@ -449,49 +449,49 @@ if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉
         
         ###### 開始回測
         
-        for n in range(0,len(KBar_df['Time'])-1):
+        for n in range(0,len(KBar_df['time'])-1):
             # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
             if not np.isnan( KBar_df['MA_long'][n-1] ) :
                 ## 進場: 如果無未平倉部位 
                 if OrderRecord.GetOpenInterest()==0 :
                     # 多單進場: 黃金交叉: short MA 向上突破 long MA
                     if KBar_df['MA_short'][n-1] <= KBar_df['MA_long'][n-1] and KBar_df['MA_short'][n] > KBar_df['MA_long'][n] :
-                        OrderRecord.Order('Buy', KBar_df['Product'][n+1],KBar_df['Time'][n+1],KBar_df['Open'][n+1],Order_Quantity)
-                        OrderPrice = KBar_df['Open'][n+1]
+                        OrderRecord.Order('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],Order_Quantity)
+                        OrderPrice = KBar_df['open'][n+1]
                         StopLossPoint = OrderPrice - MoveStopLoss
                         continue
                     # 空單進場:死亡交叉: short MA 向下突破 long MA
                     if KBar_df['MA_short'][n-1] >= KBar_df['MA_long'][n-1] and KBar_df['MA_short'][n] < KBar_df['MA_long'][n] :
-                        OrderRecord.Order('Sell', KBar_df['Product'][n+1],KBar_df['Time'][n+1],KBar_df['Open'][n+1],Order_Quantity)
-                        OrderPrice = KBar_df['Open'][n+1]
+                        OrderRecord.Order('Sell', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],Order_Quantity)
+                        OrderPrice = KBar_df['open'][n+1]
                         StopLossPoint = OrderPrice + MoveStopLoss
                         continue
                 # 多單出場: 如果有多單部位   
                 elif OrderRecord.GetOpenInterest()>0 :
                     ## 結算平倉(期貨才使用, 股票除非是下市櫃)
-                    if KBar_df['Product'][n+1] != KBar_df['Product'][n] :
-                        OrderRecord.Cover('Sell', KBar_df['Product'][n],KBar_df['Time'][n],KBar_df['Close'][n],OrderRecord.GetOpenInterest())
+                    if KBar_df['product'][n+1] != KBar_df['product'][n] :
+                        OrderRecord.Cover('Sell', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],OrderRecord.GetOpenInterest())
                         continue
                     # 逐筆移動停損價位
-                    if KBar_df['Close'][n] - MoveStopLoss > StopLossPoint :
-                        StopLossPoint = KBar_df['Close'][n] - MoveStopLoss
+                    if KBar_df['close'][n] - MoveStopLoss > StopLossPoint :
+                        StopLossPoint = KBar_df['close'][n] - MoveStopLoss
                     # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
-                    elif KBar_df['Close'][n] < StopLossPoint :
-                        OrderRecord.Cover('Sell', KBar_df['Product'][n+1],KBar_df['Time'][n+1],KBar_df['Open'][n+1],OrderRecord.GetOpenInterest())
+                    elif KBar_df['close'][n] < StopLossPoint :
+                        OrderRecord.Cover('Sell', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],OrderRecord.GetOpenInterest())
                         continue
                 # 空單出場: 如果有空單部位
                 elif OrderRecord.GetOpenInterest()<0 :
                     ## 結算平倉(期貨才使用, 股票除非是下市櫃)
-                    if KBar_df['Product'][n+1] != KBar_df['Product'][n] :
+                    if KBar_df['product'][n+1] != KBar_df['product'][n] :
                    
-                        OrderRecord.Cover('Buy', KBar_df['Product'][n],KBar_df['Time'][n],KBar_df['Close'][n],-OrderRecord.GetOpenInterest())
+                        OrderRecord.Cover('Buy', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],-OrderRecord.GetOpenInterest())
                         continue
                     # 逐筆更新移動停損價位
-                    if KBar_df['Close'][n] + MoveStopLoss < StopLossPoint :
-                        StopLossPoint = KBar_df['Close'][n] + MoveStopLoss
+                    if KBar_df['close'][n] + MoveStopLoss < StopLossPoint :
+                        StopLossPoint = KBar_df['close'][n] + MoveStopLoss
                     # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
-                    elif KBar_df['Close'][n] > StopLossPoint :
-                        OrderRecord.Cover('Buy', KBar_df['Product'][n+1],KBar_df['Time'][n+1],KBar_df['Open'][n+1],-OrderRecord.GetOpenInterest())
+                    elif KBar_df['close'][n] > StopLossPoint :
+                        OrderRecord.Cover('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],-OrderRecord.GetOpenInterest())
                         continue
 
 
@@ -506,7 +506,7 @@ def ChartOrder_MA(Kbar_df,TR):
     BuyOrderPoint_price = []
     BuyCoverPoint_date = []
     BuyCoverPoint_price = []
-    for date,Low,High in zip(Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
+    for date,Low,High in zip(Kbar_df['time'],Kbar_df['low'],Kbar_df['high']):
         # 買方進場
         if date in [ i[2] for i in BTR ]:
             BuyOrderPoint_date.append(date)
@@ -531,7 +531,7 @@ def ChartOrder_MA(Kbar_df,TR):
     SellOrderPoint_price = []
     SellCoverPoint_date = []
     SellCoverPoint_price = []
-    for date,Low,High in zip(Kbar_df['Time'],Kbar_df['Low'],Kbar_df['High']):
+    for date,Low,High in zip(Kbar_df['time'],Kbar_df['low'],Kbar_df['high']):
         # 賣方進場
         if date in [ i[2] for i in STR]:
             SellOrderPoint_date.append(date)
@@ -562,9 +562,9 @@ def ChartOrder_MA(Kbar_df,TR):
     
     #### include a go.Bar trace for volumes
     # fig5.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['Volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
-    fig5.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MA_trading+1:], y=KBar_df['MA_long'][last_nan_index_MA_trading+1:], mode='lines',line=dict(color='orange', width=2), name=f'{LongMAPeriod}-根 K棒 移動平均線'), 
+    fig5.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MA_trading+1:], y=KBar_df['MA_long'][last_nan_index_MA_trading+1:], mode='lines',line=dict(color='orange', width=2), name=f'{LongMAPeriod}-根 K棒 移動平均線'), 
                   secondary_y=False)
-    fig5.add_trace(go.Scatter(x=KBar_df['Time'][last_nan_index_MA_trading+1:], y=KBar_df['MA_short'][last_nan_index_MA_trading+1:], mode='lines',line=dict(color='pink', width=2), name=f'{ShortMAPeriod}-根 K棒 移動平均線'), 
+    fig5.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MA_trading+1:], y=KBar_df['MA_short'][last_nan_index_MA_trading+1:], mode='lines',line=dict(color='pink', width=2), name=f'{ShortMAPeriod}-根 K棒 移動平均線'), 
                   secondary_y=False)
     fig5.add_trace(go.Scatter(x=BuyOrderPoint_date, y=BuyOrderPoint_price, mode='markers',  marker=dict(color='red', symbol='triangle-up', size=10),  name='作多進場點'), secondary_y=False)
     fig5.add_trace(go.Scatter(x=BuyCoverPoint_date, y=BuyCoverPoint_price, mode='markers',  marker=dict(color='blue', symbol='triangle-down', size=10),  name='作多出場點'), secondary_y=False)
