@@ -576,7 +576,7 @@ ChartOrder_MA(KBar_df,OrderRecord.GetTradeRecord())
 # OrderRecord.GetTradeRecord()          ## 交易紀錄清單
 # OrderRecord.GetProfit()               ## 利潤清單
 
-@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+
 def 計算績效_股票():
     交易總盈虧 = OrderRecord.GetTotalProfit()*1000          ## 取得交易總盈虧
     平均每次盈虧 = OrderRecord.GetAverageProfit()*1000         ## 取得交易 "平均" 盈虧(每次)
@@ -592,7 +592,7 @@ def 計算績效_股票():
         報酬風險比='資料不足無法計算'
     return 交易總盈虧,平均每次盈虧,平均投資報酬率,平均獲利_只看獲利的,平均虧損_只看虧損的,勝率,最大連續虧損,最大盈虧回落_MDD,報酬風險比
 
-@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+
 def 計算績效_大台指期貨():
     交易總盈虧 = OrderRecord.GetTotalProfit()*200          ## 取得交易總盈虧
     平均每次盈虧 = OrderRecord.GetAverageProfit()*200         ## 取得交易 "平均" 盈虧(每次)
@@ -608,7 +608,7 @@ def 計算績效_大台指期貨():
         報酬風險比='資料不足無法計算'
     return 交易總盈虧,平均每次盈虧,平均投資報酬率,平均獲利_只看獲利的,平均虧損_只看虧損的,勝率,最大連續虧損,最大盈虧回落_MDD,報酬風險比
 
-@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+
 def 計算績效_小台指期貨():
     交易總盈虧 = OrderRecord.GetTotalProfit()*50          ## 取得交易總盈虧
     平均每次盈虧 = OrderRecord.GetAverageProfit()*50         ## 取得交易 "平均" 盈虧(每次)
