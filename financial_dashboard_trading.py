@@ -427,9 +427,9 @@ choice_strategy = st.selectbox('選擇交易策略', choices_strategy, index=0)
 if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損.':
     with st.expander("策略參數設定: (1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損."):
         MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損價格為目前每股價格減30元; 大小台指進場做多時, 取30代表停損指數為目前台股指數減30點)', 0, 100, 30, key='MoveStopLoss')
-        Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1, key='Order_Quantity')
         LongMAPeriod_trading=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10, key='trading_MA_long')
         ShortMAPeriod_trading=st.slider('設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)', 0, 100, 2, key='trading_MA_short')
+        Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1, key='Order_Quantity')
     
         ##### 計算長短移動平均線
         KBar_df['MA_long'] = Calculate_MA(KBar_df, period=LongMAPeriod_trading)
@@ -472,7 +472,7 @@ if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉
                     if KBar_df['product'][n+1] != KBar_df['product'][n] :
                         OrderRecord.Cover('Sell', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],OrderRecord.GetOpenInterest())
                         continue
-                    # 逐筆移動停損價位
+                    # 逐筆更新移動停損價位
                     if KBar_df['close'][n] - MoveStopLoss > StopLossPoint :
                         StopLossPoint = KBar_df['close'][n] - MoveStopLoss
                     # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
