@@ -422,9 +422,9 @@ with st.expander("MACD(異同移動平均線)"):
 
 ####### (7) 程式交易 #######
 st.subheader("程式交易:")
-choices_strategy = ['進場: 移動平均線黃金交叉作多,死亡交叉作空. 出場: 結算平倉(期貨), 移動停損.']
+choices_strategy = ['<進場>: 移動平均線黃金交叉作多,死亡交叉作空. <出場>: 結算平倉(期貨), 移動停損.']
 choice_strategy = st.selectbox('選擇交易策略', choices_strategy, index=0)
-if choice_strategy == '進場: 移動平均線黃金交叉作多,死亡交叉作空. 出場: 結算平倉(期貨), 移動停損.':
+if choice_strategy == '<進場>: 移動平均線黃金交叉作多,死亡交叉作空. <出場>: 結算平倉(期貨), 移動停損.':
     with st.expander("策略參數設定: 交易停損量、長移動平均線(MA)的K棒週期數目、短移動平均線(MA)的K棒週期數目、購買數量"):
         MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損價格為目前每股價格減30元; 大小台指進場做多時, 取30代表停損指數為目前台股指數減30點)', 0, 100, 30, key='MoveStopLoss')
         LongMAPeriod_trading=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10, key='trading_MA_long')
