@@ -709,7 +709,7 @@ if len(OrderRecord.Profit)>0:
     if len(df)>0:
         st.write(df)
 else:
-    st.write('沒有交易記錄(完成進場與出場隻交易)')
+    st.write('沒有交易記錄(已經了結之交易)')
 
 
 
