@@ -555,13 +555,13 @@ def ChartOrder_MA(Kbar_df,TR):
     fig5 = make_subplots(specs=[[{"secondary_y": True}]])
     
     #### include candlestick with rangeselector
-    # fig5.add_trace(go.Candlestick(x=KBar_df['Time'],
-    #                 open=KBar_df['Open'], high=KBar_df['High'],
-    #                 low=KBar_df['Low'], close=KBar_df['Close'], name='K線'),
-    #                secondary_y=False)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
+    fig5.add_trace(go.Candlestick(x=KBar_df['time'],
+                    open=KBar_df['open'], high=KBar_df['high'],
+                    low=KBar_df['low'], close=KBar_df['close'], name='K線'),
+                    secondary_y=False)   ## secondary_y=True 表示此圖形的y軸scale是在右邊而不是在左邊
     
     #### include a go.Bar trace for volumes
-    # fig5.add_trace(go.Bar(x=KBar_df['Time'], y=KBar_df['Volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
+    # fig5.add_trace(go.Bar(x=KBar_df['time'], y=KBar_df['volume'], name='成交量', marker=dict(color='black')),secondary_y=False)  ## secondary_y=False 表示此圖形的y軸scale是在左邊而不是在右邊
     fig5.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MA_trading+1:], y=KBar_df['MA_long'][last_nan_index_MA_trading+1:], mode='lines',line=dict(color='orange', width=2), name=f'{LongMAPeriod}-根 K棒 移動平均線'), 
                   secondary_y=False)
     fig5.add_trace(go.Scatter(x=KBar_df['time'][last_nan_index_MA_trading+1:], y=KBar_df['MA_short'][last_nan_index_MA_trading+1:], mode='lines',line=dict(color='pink', width=2), name=f'{ShortMAPeriod}-根 K棒 移動平均線'), 
