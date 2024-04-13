@@ -708,6 +708,8 @@ if len(OrderRecord.Profit)>0:
     df = pd.DataFrame(data)
     if len(df)>0:
         st.write(df)
+else:
+    st.write('沒有交易記錄(完成進場與出場隻交易)')
 
 
 
