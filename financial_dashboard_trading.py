@@ -166,7 +166,7 @@ def Change_Cycle(Date,cycle_duration,KBar_dic):
 Date = start_date.strftime("%Y-%m-%d")
 
 
-st.subheader("設定技術指標參數:")
+st.subheader("設定技術指標視覺化圖形之相關參數:")
 
 ###### 設定 K 棒的時間長度(分鐘)
 with st.expander("設定K棒相關參數:"):
@@ -429,6 +429,17 @@ if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉
     with st.expander("策略參數設定: (1)進場: 移動平均線黃金交叉作多,死亡交叉作空. (2)出場: 結算平倉(期貨), 移動停損."):
         MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損價格為目前每股價格減30元; 大小台指進場做多時, 取30代表停損指數為目前台股指數減30點)', 0, 100, 30)
         Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1)
+        LongMAPeriod=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10)
+        ShortMAPeriod=st.slider('設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)', 0, 100, 2)
+    
+        ##### 計算長短移動平均線
+        KBar_df['MA_long'] = Calculate_MA(KBar_df, period=LongMAPeriod)
+        KBar_df['MA_short'] = Calculate_MA(KBar_df, period=ShortMAPeriod)
+        
+        ##### 尋找最後 NAN值的位置
+        last_nan_index_MA = KBar_df['MA_long'][::-1].index[KBar_df['MA_long'][::-1].apply(pd.isna)][0]
+
+
         
         ###### 建立部位管理物件
         OrderRecord=Record() 
@@ -486,7 +497,7 @@ if choice_strategy == '(1)進場: 移動平均線黃金交叉作多,死亡交叉
 
 
 ###### 繪製K線圖加上MA以及下單點位
-@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+# @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
 def ChartOrder_MA(Kbar_df,TR):
     # # 將K線轉為DataFrame
     # Kbar_df=KbarToDf(KBar)
