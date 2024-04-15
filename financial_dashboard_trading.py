@@ -874,10 +874,7 @@ api = sj.Shioaji(simulation=False)
 with st.expander("輸入永豐金證券 'api_key' 與 'secret_key':"):
     api_key = st.text_input('輸入永豐金證券 api_key')
     secret_key = st.text_input('輸入永豐金證券 secret_key')
-    api.login(
-        api_key=str(api_key), 
-        secret_key=str(secret_key)
-    )
+    api.login(api_key=str(api_key), secret_key=str(secret_key))
 
 
 ###### 選擇金融商品
@@ -915,7 +912,7 @@ if choice == '大台指期貨2024.6到期':   ## for 期貨 'Tick' type
     from shioaji import TickFOPv1, Exchange
     @api.on_tick_fop_v1()
     def quote_callback(exchange:Exchange, tick:TickFOPv1):
-        print(f"Exchange: {exchange}, Tick: {tick}")
+        # print(f"Exchange: {exchange}, Tick: {tick}")
         # print(f"Tick Data: {tick['code']}")
         ## 将 'tick' 各項目的值存入字典 'tick_dict' 當中
         # tick_dict = tick.__dict__
@@ -963,8 +960,8 @@ if choice == '大台指期貨2024.6到期':   ## for 期貨 'Tick' type
         simtrade_list.append(tick['simtrade'])
         
         ### 將list存入字典
-        tick_dict['商品']=code_list
-        tick_dict['日期']=datetime_list
+        tick_dict['code']=code_list
+        tick_dict['datetime']=datetime_list
         tick_dict['open']=open_list
         tick_dict['underlying_price']=underlying_price_list
         tick_dict['bid_side_total_vol']=bid_side_total_vol_list
@@ -1033,7 +1030,7 @@ if choice == '大台指期貨2024.6到期':   ## for 期貨 'Tick' type
     # tick_dict['open'][0] ## Decimal('20574')
     # type(tick_dict['open'][0])
     fig6 = make_subplots(specs=[[{"secondary_y": True}]])
-    fig6.add_trace(go.Scatter(x=tick_dict['日期'], y=tick_dict['close'], mode='markers',  marker=dict(color='blue', symbol='circle', size=10),  name='逐筆交易價格'), secondary_y=False)
+    fig6.add_trace(go.Scatter(x=tick_dict['datetime'], y=tick_dict['close'], mode='markers',  marker=dict(color='blue', symbol='circle', size=10),  name='逐筆交易價格'), secondary_y=False)
     fig6.layout.yaxis2.showgrid=True
     st.plotly_chart(fig6, use_container_width=True)
     
