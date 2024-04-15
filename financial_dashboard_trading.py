@@ -877,8 +877,8 @@ api = sj.Shioaji(simulation=False)
 #     api.login(api_key=api_key, secret_key=secret_key)
 
 # ##### 初始化 api_key, secret_key
-# import nacl.signing
-# import nacl.hash
+import nacl.signing
+import nacl.hash
 # #### 給定任意字串
 # raw_seed_1 = "some_really_long_or_short_seed_string_that_needs_to_be_32_bytes"
 # raw_seed_2 = "some_really_long_or_short_seed_string_that_needs_to_be_32_BYTES"
