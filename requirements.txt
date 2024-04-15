@@ -9,4 +9,4 @@ openpyxl
 plotly
 mplfinance
 shioaji
-nacl
+pynacl
