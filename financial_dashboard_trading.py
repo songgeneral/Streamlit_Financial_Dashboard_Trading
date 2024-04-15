@@ -883,13 +883,15 @@ import nacl.hash
 raw_seed_1 = "some_really_long_or_short_seed_string_that_needs_to_be_32_bytes"
 raw_seed_2 = "some_really_long_or_short_seed_string_that_needs_to_be_32_BYTES"
 #### 使用SHA256散列来获取恰好32字节的输出
-api_key = nacl.hash.sha256(raw_seed_1.encode(), encoder=nacl.encoding.RawEncoder)
-secret_key = nacl.hash.sha256(raw_seed_2.encode(), encoder=nacl.encoding.RawEncoder)
+api_key_r = nacl.hash.sha256(raw_seed_1.encode(), encoder=nacl.encoding.RawEncoder)
+secret_key_r = nacl.hash.sha256(raw_seed_2.encode(), encoder=nacl.encoding.RawEncoder)
 
 
 api_key = st.text_input('輸入永豐金證券 api_key')
 secret_key = st.text_input('輸入永豐金證券 secret_key')
-api.login(api_key=api_key, secret_key=secret_key)
+api_key_r = nacl.hash.sha256(api_key.encode(), encoder=nacl.encoding.RawEncoder)
+secret_key_r = nacl.hash.sha256(secret_key.encode(), encoder=nacl.encoding.RawEncoder)
+api.login(api_key=api_key_r, secret_key=secret_key_r)
 
 ###### 選擇金融商品
 # choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指期貨2024.12到期: 2023.12 至 2024.4.11', '小台指期貨2024.12到期: 2023.12 至 2024.4.11', '英業達2020.1.2 至 2024.4.12', '堤維西2020.1.2 至 2024.4.12']
