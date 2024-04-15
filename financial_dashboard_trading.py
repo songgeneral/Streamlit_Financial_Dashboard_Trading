@@ -862,6 +862,190 @@ OrderRecord.GeneratorProfit_rateChart(StrategyName='MA')
 # st.pyplot(plt)
 
 
+####### (8) 呈現即時資料 #######
+st.subheader("即時金融資料呈現: ")
+###### 匯入 Shioaji 套件
+import shioaji as sj
+###### 建立 Shioaji api 物件
+api = sj.Shioaji(simulation=False)
+# api = sj.Shioaji(simulation=True)
+
+###### 登入帳號
+with st.expander("輸入永豐金證券 'api_key' 與 'secret_key':"):
+    api_key = st.text_input('輸入永豐金證券 api_key')
+    secret_key = st.text_input('輸入永豐金證券 secret_key')
+    api.login(
+        api_key=api_key, 
+        secret_key=secret_key
+    )
+
+
+###### 選擇金融商品
+# choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指期貨2024.12到期: 2023.12 至 2024.4.11', '小台指期貨2024.12到期: 2023.12 至 2024.4.11', '英業達2020.1.2 至 2024.4.12', '堤維西2020.1.2 至 2024.4.12']
+choices = ['大台指期貨2024.6到期']
+choice = st.selectbox('選擇金融商品', choices, index=0)
+
+
+###### 訂閱即時報價資料:  
+if choice == '大台指期貨2024.6到期':   ## for 期貨 'Tick' type
+    # import pandas as pd
+    ##### callback setting 
+    tick_dict = {}
+    code_list=[]
+    datetime_list=[]
+    open_list=[]
+    underlying_price_list=[]
+    bid_side_total_vol_list=[]
+    ask_side_total_vol_list=[]
+    avg_price_list=[]
+    close_list=[]
+    high_list=[]
+    low_list=[]
+    amount_list=[]
+    total_amount_list=[]
+    volume_list=[]
+    total_volume_list=[]
+    tick_type_list=[]
+    chg_type_list=[]
+    price_chg_list=[]
+    pct_chg_list=[]
+    simtrade_list=[]
+
+    #### callback function setting 
+    from shioaji import TickFOPv1, Exchange
+    @api.on_tick_fop_v1()
+    def quote_callback(exchange:Exchange, tick:TickFOPv1):
+        print(f"Exchange: {exchange}, Tick: {tick}")
+        # print(f"Tick Data: {tick['code']}")
+        ## 将 'tick' 各項目的值存入字典 'tick_dict' 當中
+        # tick_dict = tick.__dict__
+        
+        
+        # tick_dict['商品'] = tick['code']
+        # tick_dict['日期'] = tick['datetime']
+        # tick_dict['open'] = tick['open']
+        # tick_dict['underlying_price'] = tick['underlying_price']
+        # tick_dict['bid_side_total_vol'] = tick['bid_side_total_vol']
+        # tick_dict['ask_side_total_vol'] = tick['ask_side_total_vol']
+        # tick_dict['avg_price'] = tick['avg_price']
+        # tick_dict['close'] = tick['close']
+        # tick_dict['high'] = tick['high']
+        # tick_dict['low'] = tick['low']
+        # tick_dict['amount'] = tick['amount']
+        # tick_dict['total_amount'] = tick['total_amount']
+        # tick_dict['volume'] = tick['volume']
+        # tick_dict['total_volume'] = tick['total_volume']
+        # tick_dict['tick_type'] = tick['tick_type']
+        # tick_dict['chg_type'] = tick['chg_type']
+        # tick_dict['price_chg'] = tick['price_chg']
+        # tick_dict['pct_chg'] = tick['pct_chg']
+        # tick_dict['simtrade'] = tick['simtrade']
+        
+        ### 將接收到的報價資料存入 list:
+        code_list.append(tick['code'])
+        datetime_list.append(tick['datetime'])
+        open_list.append(tick['open'])
+        underlying_price_list.append(tick['underlying_price'])
+        bid_side_total_vol_list.append(tick['bid_side_total_vol'])
+        ask_side_total_vol_list.append(tick['ask_side_total_vol'])
+        avg_price_list.append(tick['avg_price'])
+        close_list.append(tick['close'])
+        high_list.append(tick['high'])
+        low_list.append(tick['low'])
+        amount_list.append(tick['amount'])
+        total_amount_list.append(tick['total_amount'])
+        volume_list.append(tick['volume'])
+        total_volume_list.append(tick['total_volume'])
+        tick_type_list.append(tick['tick_type'])
+        chg_type_list.append(tick['chg_type'])
+        price_chg_list.append(tick['price_chg'])
+        pct_chg_list.append(tick['pct_chg'])
+        simtrade_list.append(tick['simtrade'])
+        
+        ### 將list存入字典
+        tick_dict['商品']=code_list
+        tick_dict['日期']=datetime_list
+        tick_dict['open']=open_list
+        tick_dict['underlying_price']=underlying_price_list
+        tick_dict['bid_side_total_vol']=bid_side_total_vol_list
+        tick_dict['ask_side_total_vol']=ask_side_total_vol_list
+        tick_dict['avg_price']=avg_price_list
+        tick_dict['close']=close_list
+        tick_dict['high']=high_list
+        tick_dict['low']=low_list
+        tick_dict['amount']=amount_list
+        tick_dict['total_amount']=total_amount_list
+        tick_dict['volume']=volume_list
+        tick_dict['total_volume']=total_volume_list
+        tick_dict['tick_type']=tick_type_list
+        tick_dict['chg_type']=chg_type_list
+        tick_dict['price_chg']=price_chg_list
+        tick_dict['pct_chg']=pct_chg_list
+        tick_dict['simtrade']=simtrade_list
+        
+        ### 輸出格式說明:
+        '''
+        code (str): 商品代碼
+        datetime (datetime): 時間
+        open (decimal): 開盤價
+        avg_price (decimal): 均價
+        close (decimal): 成交價
+        high (decimal): 最高價(自開盤)
+        low (decimal): 最低價(自開盤)
+        amount (decimal): 成交額 (NTD)
+        total_amount (decimal): 總成交額 (NTD)
+        volume (int): 成交量
+        total_volume (int): 總成交量
+        tick_type (int): 內外盤別
+        chg_type (int): 漲跌註記
+        price_chg (decimal): 漲跌價
+        pct_chg (decimal): 漲跌率
+        bid_side_total_vol (int): 買盤成交總量 (張)
+        ask_side_total_vol (int): 賣盤成交總量 (張)
+        bid_side_total_cnt (int): 買盤成交筆數
+        ask_side_total_cnt (int): 賣盤成交筆數
+        closing_oddlot_shares (int): 盤後零股成交股數 
+        closing_oddlot_close (decimal): 盤後零股成交價
+        closing_oddlot_amount (decimal): 盤後零股成交額
+        closing_oddlot_bid_price (decimal): 盤後零股買價 
+        closing_oddlot_ask_price (decimal): 盤後零股賣價 
+        fixed_trade_vol (int): 定盤成交量 (張)
+        fixed_trade_amount (decimal): 定盤成交額
+        bid_price (:List:decimal): 買價
+        bid_volume (:List:int) 買量
+        diff_bid_vol (:List:int) 買價增減量
+        ask_price (:List:decimal): 賣價
+        ask_volume (:List:int) 賣量
+        diff_ask_vol (:List:int) 賣價增減量
+        avail_borrowing (int): 借券可用餘額
+        suspend (bool): 暫停交易
+        simtrade (bool): 試撮
+        '''
+
+
+    ##### 訂閱
+    # api.quote.subscribe(api.Contracts.Futures.TXF['TXF202406'],quote_type = sj.constant.QuoteType.Quote)
+    api.quote.subscribe(api.Contracts.Futures.TXF['TXF202406'],quote_type = 'tick')  
+
+
+    ##### 呈現資料
+    # tick_dict['商品']
+    # tick_dict['open'][0] ## Decimal('20574')
+    # type(tick_dict['open'][0])
+    fig6 = make_subplots(specs=[[{"secondary_y": True}]])
+    fig6.add_trace(go.Scatter(x=tick_dict['日期'], y=tick_dict['close'], mode='markers',  marker=dict(color='blue', symbol='circle', size=10),  name='逐筆交易價格'), secondary_y=False)
+    fig6.layout.yaxis2.showgrid=True
+    st.plotly_chart(fig6, use_container_width=True)
+    
+    
+      
+    ##### 取消訂閱
+    ### 取消 'quote' 類型之訂閱
+    ## 创建一个按钮，并检查是否被按下
+    if st.button('停止訂閱資料'):
+        api.quote.unsubscribe(api.Contracts.Futures.TXF['TXF202406'], quote_type='tick') 
+
+
 
 
 
