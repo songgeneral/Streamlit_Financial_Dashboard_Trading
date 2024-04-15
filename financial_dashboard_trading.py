@@ -876,28 +876,41 @@ api = sj.Shioaji(simulation=False)
 #     secret_key = st.text_input('輸入永豐金證券 secret_key')
 #     api.login(api_key=api_key, secret_key=secret_key)
 
-##### 初始化 api_key, secret_key
-import nacl.signing
-import nacl.hash
-#### 給定任意字串
-raw_seed_1 = "some_really_long_or_short_seed_string_that_needs_to_be_32_bytes"
-raw_seed_2 = "some_really_long_or_short_seed_string_that_needs_to_be_32_BYTES"
-#### 使用SHA256散列来获取恰好32字节的输出
-api_key_r = nacl.hash.sha256(raw_seed_1.encode(), encoder=nacl.encoding.RawEncoder)
-secret_key_r = nacl.hash.sha256(raw_seed_2.encode(), encoder=nacl.encoding.RawEncoder)
-#### 将字节转换为十六进制字符串
-api_key_r_hex = api_key_r.hex()
-secret_key_r_hex = secret_key_r.hex()
+# ##### 初始化 api_key, secret_key
+# import nacl.signing
+# import nacl.hash
+# #### 給定任意字串
+# raw_seed_1 = "some_really_long_or_short_seed_string_that_needs_to_be_32_bytes"
+# raw_seed_2 = "some_really_long_or_short_seed_string_that_needs_to_be_32_BYTES"
+# #### 使用SHA256散列来获取恰好32字节的输出
+# api_key_r = nacl.hash.sha256(raw_seed_1.encode(), encoder=nacl.encoding.RawEncoder)
+# secret_key_r = nacl.hash.sha256(raw_seed_2.encode(), encoder=nacl.encoding.RawEncoder)
+# #### 将字节转换为十六进制字符串
+# api_key_r_hex = api_key_r.hex()
+# secret_key_r_hex = secret_key_r.hex()
 
 ##### 正式輸入
 api_key = st.text_input('輸入永豐金證券 api_key')
 secret_key = st.text_input('輸入永豐金證券 secret_key')
 api_key_r = nacl.hash.sha256(api_key.encode(), encoder=nacl.encoding.RawEncoder)
 secret_key_r = nacl.hash.sha256(secret_key.encode(), encoder=nacl.encoding.RawEncoder)
-#### 将字节转换为十六进制字符串
-api_key_r_hex = api_key_r.hex()
-secret_key_r_hex = secret_key_r.hex()
-api.login(api_key=api_key_r_hex, secret_key=secret_key_r_hex)
+
+# 创建签名密钥
+api_key_rr = nacl.signing.SigningKey(api_key_r)
+secret_key_rr = nacl.signing.SigningKey(secret_key_r)
+# 可以进一步生成公钥
+api_key_rrr = api_key_rr.verify_key
+secret_key_rrr = secret_key_rr.verify_key
+
+# 将公钥编码为可传输形式
+api_key_rrrr = api_key_rrr.encode(encoder=nacl.encoding.HexEncoder)
+secret_key_rrrr = secret_key_rrr.encode(encoder=nacl.encoding.HexEncoder)
+
+api_key_rrrrr = api_key_rrrr.decode()
+secret_key_rrrrr = secret_key_rrrr.decode()
+
+api.login(api_key=api_key_rrrrr, secret_key=secret_key_rrrrr)
+
 
 ###### 選擇金融商品
 # choices = ['台積電: 2022.1.1 至 2024.4.9', '大台指期貨2024.12到期: 2023.12 至 2024.4.11', '小台指期貨2024.12到期: 2023.12 至 2024.4.11', '英業達2020.1.2 至 2024.4.12', '堤維西2020.1.2 至 2024.4.12']
