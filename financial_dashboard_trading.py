@@ -877,8 +877,8 @@ api = sj.Shioaji(simulation=False)
 #     api.login(api_key=api_key, secret_key=secret_key)
 
 # ##### 初始化 api_key, secret_key
-import nacl.signing
-import nacl.hash
+# import nacl.signing
+# import nacl.hash
 # #### 給定任意字串
 # raw_seed_1 = "some_really_long_or_short_seed_string_that_needs_to_be_32_bytes"
 # raw_seed_2 = "some_really_long_or_short_seed_string_that_needs_to_be_32_BYTES"
@@ -890,26 +890,27 @@ import nacl.hash
 # secret_key_r_hex = secret_key_r.hex()
 
 ##### 正式輸入
-api_key = st.text_input('輸入永豐金證券 api_key')
-secret_key = st.text_input('輸入永豐金證券 secret_key')
-api_key_r = nacl.hash.sha256(api_key.encode(), encoder=nacl.encoding.RawEncoder)
-secret_key_r = nacl.hash.sha256(secret_key.encode(), encoder=nacl.encoding.RawEncoder)
+# api_key = st.text_input('輸入永豐金證券 api_key')
+# secret_key = st.text_input('輸入永豐金證券 secret_key')
+# api_key_r = nacl.hash.sha256(api_key.encode(), encoder=nacl.encoding.RawEncoder)
+# secret_key_r = nacl.hash.sha256(secret_key.encode(), encoder=nacl.encoding.RawEncoder)
 
-# 创建签名密钥
-api_key_rr = nacl.signing.SigningKey(api_key_r)
-secret_key_rr = nacl.signing.SigningKey(secret_key_r)
-# 可以进一步生成公钥
-api_key_rrr = api_key_rr.verify_key
-secret_key_rrr = secret_key_rr.verify_key
+# # 创建签名密钥
+# api_key_rr = nacl.signing.SigningKey(api_key_r)
+# secret_key_rr = nacl.signing.SigningKey(secret_key_r)
+# # 可以进一步生成公钥
+# api_key_rrr = api_key_rr.verify_key
+# secret_key_rrr = secret_key_rr.verify_key
 
-# 将公钥编码为可传输形式
-api_key_rrrr = api_key_rrr.encode(encoder=nacl.encoding.HexEncoder)
-secret_key_rrrr = secret_key_rrr.encode(encoder=nacl.encoding.HexEncoder)
+# # 将公钥编码为可传输形式
+# api_key_rrrr = api_key_rrr.encode(encoder=nacl.encoding.HexEncoder)
+# secret_key_rrrr = secret_key_rrr.encode(encoder=nacl.encoding.HexEncoder)
 
-api_key_rrrrr = api_key_rrrr.decode()
-secret_key_rrrrr = secret_key_rrrr.decode()
+# api_key_rrrrr = api_key_rrrr.decode()
+# secret_key_rrrrr = secret_key_rrrr.decode()
 
-api.login(api_key=api_key_rrrrr, secret_key=secret_key_rrrrr)
+# api.login(api_key=api_key_rrrrr, secret_key=secret_key_rrrrr)
+api.login(api_key="53Gt4TFB7DLj2h3Y69B8hM4vbKN9s9wmzX36AwECPsjo", secret_key="DvuS9nSNsm66JN6dqNJnQyMkALwGPVt36SFHtxXTfQta")
 
 
 ###### 選擇金融商品
