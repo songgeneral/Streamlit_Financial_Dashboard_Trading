@@ -874,7 +874,7 @@ api = sj.Shioaji(simulation=False)
 with st.expander("輸入永豐金證券 'api_key' 與 'secret_key':"):
     api_key = st.text_input('輸入永豐金證券 api_key')
     secret_key = st.text_input('輸入永豐金證券 secret_key')
-    api.login(api_key=str(api_key), secret_key=str(secret_key))
+    api.login(api_key=api_key, secret_key=secret_key)
 
 
 ###### 選擇金融商品
