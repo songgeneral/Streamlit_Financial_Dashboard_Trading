@@ -919,7 +919,7 @@ if choice == '大台指期貨2024.6到期':   ## for 期貨 'Tick' type
         # print(f"Tick Data: {tick['code']}")
         ## 将 'tick' 各項目的值存入字典 'tick_dict' 當中
         # tick_dict = tick.__dict__
-        
+        st.write(tick['code'])
         
         # tick_dict['商品'] = tick['code']
         # tick_dict['日期'] = tick['datetime']
