@@ -424,7 +424,7 @@ with st.expander("MACD(異同移動平均線)"):
 st.subheader("程式交易:")
 
 ###### 函數定義: 繪製K線圖加上MA以及下單點位
-@st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
+# @st.cache_data(ttl=3600, show_spinner="正在加載資料...")  ## Add the caching decorator
 def ChartOrder_MA(Kbar_df,TR):
     # # 將K線轉為DataFrame
     # Kbar_df=KbarToDf(KBar)
