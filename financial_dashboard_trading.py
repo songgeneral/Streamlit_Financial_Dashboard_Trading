@@ -502,33 +502,36 @@ def ChartOrder_MA(Kbar_df,TR):
     fig5.layout.yaxis2.showgrid=True
     st.plotly_chart(fig5, use_container_width=True)
 
-
+###### 選擇不同交易策略:
 choices_strategy = ['<進場>: 移動平均線黃金交叉作多,死亡交叉作空. <出場>: 結算平倉(期貨), 移動停損.']
 choice_strategy = st.selectbox('選擇交易策略', choices_strategy, index=0)
+
+##### 各別不同策略
 if choice_strategy == '<進場>: 移動平均線黃金交叉作多,死亡交叉作空. <出場>: 結算平倉(期貨), 移動停損.':
+    #### 選擇參數
     with st.expander("<策略參數設定>: 交易停損量、長移動平均線(MA)的K棒週期數目、短移動平均線(MA)的K棒週期數目、購買數量"):
         MoveStopLoss = st.slider('選擇程式交易停損量(股票:每股價格; 期貨(大小台指):台股指數點數. 例如: 股票進場做多時, 取30代表停損價格為目前每股價格減30元; 大小台指進場做多時, 取30代表停損指數為目前台股指數減30點)', 0, 100, 30, key='MoveStopLoss')
         LongMAPeriod_trading=st.slider('設定計算長移動平均線(MA)的 K棒週期數目(整數, 例如 10)', 0, 100, 10, key='trading_MA_long')
         ShortMAPeriod_trading=st.slider('設定計算短移動平均線(MA)的 K棒週期數目(整數, 例如 2)', 0, 100, 2, key='trading_MA_short')
         Order_Quantity = st.slider('選擇購買數量(股票單位為張數(一張為1000股); 期貨單位為口數)', 1, 100, 1, key='Order_Quantity')
     
-        ##### 計算長短移動平均線
+        ### 計算長短移動平均線
         KBar_df['MA_long'] = Calculate_MA(KBar_df, period=LongMAPeriod_trading)
         KBar_df['MA_short'] = Calculate_MA(KBar_df, period=ShortMAPeriod_trading)
         
-        ##### 尋找最後 NAN值的位置
+        ### 尋找最後 NAN值的位置
         last_nan_index_MA_trading = KBar_df['MA_long'][::-1].index[KBar_df['MA_long'][::-1].apply(pd.isna)][0]
 
 
         
-        ###### 建立部位管理物件
+        ### 建立部位管理物件
         OrderRecord=Record() 
         
         # ###### 變為字典
         # # KBar_dic = KBar_df_original.to_dict('list')
         # KBar_dic = KBar_df.to_dict('list')
         
-    ###### 開始回測
+    #### 開始回測
     for n in range(1,len(KBar_df['time'])-1):
         # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
         if not np.isnan( KBar_df['MA_long'][n-1] ) :
@@ -574,7 +577,7 @@ if choice_strategy == '<進場>: 移動平均線黃金交叉作多,死亡交叉�
                     OrderRecord.Cover('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],-OrderRecord.GetOpenInterest())
                     continue
 
-    ###### 繪製K線圖加上MA以及下單點位    
+    #### 繪製K線圖加上MA以及下單點位    
     ChartOrder_MA(KBar_df,OrderRecord.GetTradeRecord())
 
 ##### 繪製K線圖加上MA以及下單點位
