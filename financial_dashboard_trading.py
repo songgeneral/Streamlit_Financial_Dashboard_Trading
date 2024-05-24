@@ -528,52 +528,51 @@ if choice_strategy == '<進場>: 移動平均線黃金交叉作多,死亡交叉�
         # # KBar_dic = KBar_df_original.to_dict('list')
         # KBar_dic = KBar_df.to_dict('list')
         
-        ###### 開始回測
-        
-        for n in range(1,len(KBar_df['time'])-1):
-            # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
-            if not np.isnan( KBar_df['MA_long'][n-1] ) :
-                ## 進場: 如果無未平倉部位 
-                if OrderRecord.GetOpenInterest()==0 :
-                    # 多單進場: 黃金交叉: short MA 向上突破 long MA
-                    if KBar_df['MA_short'][n-1] <= KBar_df['MA_long'][n-1] and KBar_df['MA_short'][n] > KBar_df['MA_long'][n] :
-                        OrderRecord.Order('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],Order_Quantity)
-                        OrderPrice = KBar_df['open'][n+1]
-                        StopLossPoint = OrderPrice - MoveStopLoss
-                        continue
-                    # 空單進場:死亡交叉: short MA 向下突破 long MA
-                    if KBar_df['MA_short'][n-1] >= KBar_df['MA_long'][n-1] and KBar_df['MA_short'][n] < KBar_df['MA_long'][n] :
-                        OrderRecord.Order('Sell', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],Order_Quantity)
-                        OrderPrice = KBar_df['open'][n+1]
-                        StopLossPoint = OrderPrice + MoveStopLoss
-                        continue
-                # 多單出場: 如果有多單部位   
-                elif OrderRecord.GetOpenInterest()>0 :
-                    ## 結算平倉(期貨才使用, 股票除非是下市櫃)
-                    if KBar_df['product'][n+1] != KBar_df['product'][n] :
-                        OrderRecord.Cover('Sell', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],OrderRecord.GetOpenInterest())
-                        continue
-                    # 逐筆更新移動停損價位
-                    if KBar_df['close'][n] - MoveStopLoss > StopLossPoint :
-                        StopLossPoint = KBar_df['close'][n] - MoveStopLoss
-                    # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
-                    elif KBar_df['close'][n] < StopLossPoint :
-                        OrderRecord.Cover('Sell', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],OrderRecord.GetOpenInterest())
-                        continue
-                # 空單出場: 如果有空單部位
-                elif OrderRecord.GetOpenInterest()<0 :
-                    ## 結算平倉(期貨才使用, 股票除非是下市櫃)
-                    if KBar_df['product'][n+1] != KBar_df['product'][n] :
-                   
-                        OrderRecord.Cover('Buy', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],-OrderRecord.GetOpenInterest())
-                        continue
-                    # 逐筆更新移動停損價位
-                    if KBar_df['close'][n] + MoveStopLoss < StopLossPoint :
-                        StopLossPoint = KBar_df['close'][n] + MoveStopLoss
-                    # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
-                    elif KBar_df['close'][n] > StopLossPoint :
-                        OrderRecord.Cover('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],-OrderRecord.GetOpenInterest())
-                        continue
+    ###### 開始回測
+    for n in range(1,len(KBar_df['time'])-1):
+        # 先判斷long MA的上一筆值是否為空值 再接續判斷策略內容
+        if not np.isnan( KBar_df['MA_long'][n-1] ) :
+            ## 進場: 如果無未平倉部位 
+            if OrderRecord.GetOpenInterest()==0 :
+                # 多單進場: 黃金交叉: short MA 向上突破 long MA
+                if KBar_df['MA_short'][n-1] <= KBar_df['MA_long'][n-1] and KBar_df['MA_short'][n] > KBar_df['MA_long'][n] :
+                    OrderRecord.Order('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],Order_Quantity)
+                    OrderPrice = KBar_df['open'][n+1]
+                    StopLossPoint = OrderPrice - MoveStopLoss
+                    continue
+                # 空單進場:死亡交叉: short MA 向下突破 long MA
+                if KBar_df['MA_short'][n-1] >= KBar_df['MA_long'][n-1] and KBar_df['MA_short'][n] < KBar_df['MA_long'][n] :
+                    OrderRecord.Order('Sell', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],Order_Quantity)
+                    OrderPrice = KBar_df['open'][n+1]
+                    StopLossPoint = OrderPrice + MoveStopLoss
+                    continue
+            # 多單出場: 如果有多單部位   
+            elif OrderRecord.GetOpenInterest()>0 :
+                ## 結算平倉(期貨才使用, 股票除非是下市櫃)
+                if KBar_df['product'][n+1] != KBar_df['product'][n] :
+                    OrderRecord.Cover('Sell', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],OrderRecord.GetOpenInterest())
+                    continue
+                # 逐筆更新移動停損價位
+                if KBar_df['close'][n] - MoveStopLoss > StopLossPoint :
+                    StopLossPoint = KBar_df['close'][n] - MoveStopLoss
+                # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
+                elif KBar_df['close'][n] < StopLossPoint :
+                    OrderRecord.Cover('Sell', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],OrderRecord.GetOpenInterest())
+                    continue
+            # 空單出場: 如果有空單部位
+            elif OrderRecord.GetOpenInterest()<0 :
+                ## 結算平倉(期貨才使用, 股票除非是下市櫃)
+                if KBar_df['product'][n+1] != KBar_df['product'][n] :
+               
+                    OrderRecord.Cover('Buy', KBar_df['product'][n],KBar_df['time'][n],KBar_df['close'][n],-OrderRecord.GetOpenInterest())
+                    continue
+                # 逐筆更新移動停損價位
+                if KBar_df['close'][n] + MoveStopLoss < StopLossPoint :
+                    StopLossPoint = KBar_df['close'][n] + MoveStopLoss
+                # 如果上一根K的收盤價觸及停損價位，則在最新時間出場
+                elif KBar_df['close'][n] > StopLossPoint :
+                    OrderRecord.Cover('Buy', KBar_df['product'][n+1],KBar_df['time'][n+1],KBar_df['open'][n+1],-OrderRecord.GetOpenInterest())
+                    continue
 
     ###### 繪製K線圖加上MA以及下單點位    
     ChartOrder_MA(KBar_df,OrderRecord.GetTradeRecord())
